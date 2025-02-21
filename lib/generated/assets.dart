@@ -2,8 +2,10 @@
 class Assets {
   Assets._();
 
+  static const String backgroundBackgroundImage = 'assets/images/background/background_image.png';
   static const String iconsIndianIcon = 'assets/icons/indian_icon.png';
   static const String imagesChickenLogo = 'assets/images/chicken_logo.png';
   static const String imagesGoldenEgg = 'assets/images/golden_egg.png';
+  static const String imagesHenImage = 'assets/images/hen_image.png';
 
 }
