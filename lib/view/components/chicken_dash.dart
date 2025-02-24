@@ -5,12 +5,13 @@ import 'package:flame/components.dart';
 class ChickenDash extends PositionComponent {
   ChickenDash()
       : super(
-    position: Vector2(-230, 170), // Initial position
+    position: Vector2(-230, 170),
     size: Vector2.all(250.0),
     anchor: Anchor.center,
   );
 
   late Sprite _dashSprite;
+  Vector2 _movementDirection = Vector2.zero();
 
   @override
   Future<void> onLoad() async {
@@ -27,8 +28,18 @@ class ChickenDash extends PositionComponent {
     );
   }
 
-  // Method to update the position
-  void move(Vector2 newPosition) {
-    position = newPosition;
+  void moveInDirection(Vector2 direction) {
+    _movementDirection = direction;
   }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    position += _movementDirection * dt * 200;
+  }
+
+  void stopMovement() {
+    _movementDirection = Vector2.zero();
+  }
+
 }

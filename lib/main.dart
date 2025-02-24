@@ -22,16 +22,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstant.appName,
-      initialRoute: RoutesName.splash,
-      onGenerateRoute: (settings) {
-        if (settings.name != null) {
-          return MaterialPageRoute(
-              builder: Routers.generateRoute(settings.name!),
-              settings: settings);
-        }
-        return null;
-      },
-      // home: MainPage(),
+      // initialRoute: RoutesName.splash,
+      // onGenerateRoute: (settings) {
+      //   if (settings.name != null) {
+      //     return MaterialPageRoute(
+      //         builder: Routers.generateRoute(settings.name!),
+      //         settings: settings);
+      //   }
+      //   return null;
+      // },
+      home: MainPage(),
     );
   }
 }
