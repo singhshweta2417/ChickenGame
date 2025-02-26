@@ -21,9 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: height * 0.05),
           HeaderWidget(),
           SizedBox(height: height * 0.02),
-          SizedBox(
-              height: height*0.45,
-              child: MainPage()),
+          // SizedBox(
+          //     height: height*0.45,
+          //     child: MainPage()),
           SizedBox(height: height * 0.05),
           FooterWidget()
         ],

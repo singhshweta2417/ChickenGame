@@ -1,12 +1,11 @@
 import 'dart:ui';
-
 import 'package:flame/components.dart';
 
 class ChickenDash extends PositionComponent {
   ChickenDash()
       : super(
-    position: Vector2(-230, 170),
-    size: Vector2.all(250.0),
+    position: Vector2(-280, 260),
+    size: Vector2.all(200.0),
     anchor: Anchor.center,
   );
 
@@ -16,7 +15,7 @@ class ChickenDash extends PositionComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _dashSprite = await Sprite.load('hen_image.png');
+    _dashSprite = await Sprite.load('hen.gif');
   }
 
   @override

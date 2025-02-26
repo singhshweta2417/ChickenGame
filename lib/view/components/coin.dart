@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 class Coin extends PositionComponent {
-  Coin({required Vector2 position}) : super(position: position, size: Vector2.all(200));
+  Coin({required Vector2 position}) : super(position: position, size: Vector2.all(150));
 
   late Sprite sprite;
 
