@@ -1,30 +1,63 @@
 import 'dart:ui';
 import 'package:flame/components.dart';
 
-class ChickenDash extends PositionComponent {
+class ChickenDash extends SpriteAnimationComponent {
   ChickenDash()
       : super(
-    position: Vector2(-280, 260),
-    size: Vector2.all(200.0),
-    anchor: Anchor.center,
-  );
+          position: Vector2(-280, 260),
+          size: Vector2.all(200.0),
+          anchor: Anchor.center,
+        );
 
   late Sprite _dashSprite;
   Vector2 _movementDirection = Vector2.zero();
 
+  bool _isLoaded = false;
+
   @override
   Future<void> onLoad() async {
-    await super.onLoad();
-    _dashSprite = await Sprite.load('hen.gif');
+    try {
+      final List<Sprite> frames = [];
+
+      for (var i = 1; i <= 31; i++) {
+        try {
+          final String imagePath = 'chickens/chicken$i.png';
+          print('Loading image: $imagePath');
+
+          // Check if the image exists before loading
+          final sprite = await Sprite.load(imagePath);
+          frames.add(sprite);
+
+          print('Successfully loaded: $imagePath');
+        } catch (e) {
+          print('Skipping invalid image: chickens/chicken$i.png - Error: $e');
+        }
+      }
+
+      if (frames.isNotEmpty) {
+        animation = SpriteAnimation.spriteList(frames, stepTime: 0.1);
+      }
+
+      try {
+        _dashSprite = await Sprite.load('chickens/chicken1.png');
+        _isLoaded = true;
+      } catch (e) {
+        print('Failed to load dash sprite: $e');
+      }
+    } catch (e) {
+      print('Failed to load chicken animation: $e');
+    }
   }
+
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    _dashSprite.render(
-      canvas,
-      size: size,
-    );
+
+    if (_isLoaded) {
+      // Render only if _dashSprite is loaded
+      _dashSprite.render(canvas, size: size);
+    }
   }
 
   void moveInDirection(Vector2 direction) {

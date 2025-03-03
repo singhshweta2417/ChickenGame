@@ -10,13 +10,13 @@ class BaseBackGroundDash extends PositionComponent {
   @override
   Future<void> onLoad() async {
     try {
-      print('Attempting to load base_fire_image.png');
       sprite = await Sprite.load('base_fire_image.png');
       print('Background jail sprite loaded successfully');
     } catch (e) {
       print('Failed to load background base_fire_image sprite: $e');
     }
   }
+
 
   @override
   void render(Canvas canvas) {

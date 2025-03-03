@@ -1,38 +1,39 @@
+import 'dart:math';
+
 import 'package:chicken_game/view/components/background_jail.dart';
 import 'package:chicken_game/view/components/base_background.dart';
 import 'package:chicken_game/view/components/coin.dart';
+import 'package:chicken_game/view/components/fire.dart';
 import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame/text.dart';
 import 'package:chicken_game/view/chicken_game.dart';
 import 'package:flutter/material.dart';
+import 'dart:async'
+    as dart_async; // Ensures we use dart_async.Timer instead of Flame's Timer
 
 class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
-
   /// Whether the background is currently moving.
   bool isMoving = false;
 
-  /// List to store all coins in the game.
+  /// Lists to store game elements.
   final List<Coin> coins = [];
   final List<BackgroundJailDash> jails = [];
   final List<BaseBackGroundDash> baseSurfaces = [];
-  /// List to store text components above coins.
+  final List<FireDash> fireSurfaces = [];
   final List<TextComponent> coinTexts = [];
 
   /// Spacing between coins in a row.
   static const double coinSpacing = 100;
-
-  /// Starting X position for the first coin in the row.
   static const double coinStartX = 110;
-
-  /// Number of coins to add in a row.
   static const int numberOfCoins = 10;
 
-  /// Base velocity of the parallax background when moving.
+  /// Background velocity.
   static Vector2 backgroundVelocity = Vector2(20, 0);
-
-  /// Vertical offset for the text above the coins.
   static const double textOffsetY = -190;
+
+  /// Timer for repositioning fire surfaces.
+  dart_async.Timer? _fireRepositionTimer;
 
   @override
   Future<void> onLoad() async {
@@ -40,44 +41,46 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
 
     try {
       // Load the parallax background
-      parallax = await game.loadParallax([
-        ParallaxImageData('background/background_image.png'),
-      ],
-          baseVelocity: Vector2.zero(),
-          velocityMultiplierDelta: Vector2(2, 0),
-          fill: LayerFill.height,
-          repeat: ImageRepeat.repeat);
+      parallax = await game.loadParallax(
+        [ParallaxImageData('background/background_image.png')],
+        baseVelocity: Vector2.zero(),
+        velocityMultiplierDelta: Vector2(2, 0),
+        fill: LayerFill.height,
+        repeat: ImageRepeat.repeat,
+      );
 
-      // Add coins in a row sequence
+      // Add game elements
       _addCoins();
+      startFireRepositioning();
     } catch (e) {
       debugPrint('Error loading parallax background or coins: $e');
     }
   }
 
-  /// List to store all jail images in the game.
-
+  /// Adds coins, jails, fire, and text.
   void _addCoins() {
     final double startY = game.size.y / 6;
     for (int i = 0; i < numberOfCoins; i++) {
-      final coinPosition = Vector2(
-        coinStartX + i * coinSpacing,
-        startY,
-      );
+      final coinPosition = Vector2(coinStartX + i * coinSpacing, startY);
 
-      // Add jail image
-      final jail = BackgroundJailDash(position: coinPosition + Vector2(-15, -120)); // Adjust the Y offset as needed
+      final jail =
+          BackgroundJailDash(position: coinPosition + Vector2(-15, -120));
       jails.add(jail);
       add(jail);
-      // Add coin
+
       final coin = Coin(position: coinPosition);
       coins.add(coin);
       add(coin);
-      // Add baseSurface image
-      final baseSurface = BaseBackGroundDash(position: coinPosition + Vector2(-8, 220)); // Adjust the Y offset as needed
+
+      final baseSurface =
+          BaseBackGroundDash(position: coinPosition + Vector2(-8, 220));
       baseSurfaces.add(baseSurface);
       add(baseSurface);
-      // Add text at a fixed position relative to the coin
+
+      final fireSurface = FireDash(position: coinPosition + Vector2(100, 480));
+      fireSurfaces.add(fireSurface);
+      add(fireSurface);
+
       final text = TextComponent(
         text: '${i + 1}',
         position: coinPosition + Vector2(coin.size.x / 0.8, -textOffsetY),
@@ -90,15 +93,16 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
           ),
         ),
       );
-      // Adjust text spacing
+
       const double textSpacing = 100;
       text.position.x += textSpacing * i;
+      fireSurface.position.x += textSpacing * i;
       coinTexts.add(text);
       add(text);
     }
   }
 
-  /// Toggles the background's movement.
+  /// Toggles background movement.
   void toggleMovement() {
     if (isMoving) {
       parallax?.baseVelocity = Vector2.zero();
@@ -117,50 +121,98 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
         final text = coinTexts[i];
         final jail = jails[i];
         final baseSurface = baseSurfaces[i];
+        final fireSurface = fireSurfaces[i];
+
         text.position.x -= backgroundVelocity.x * dt;
         coin.position.x -= backgroundVelocity.x / 2 * dt;
         jail.position.x -= backgroundVelocity.x / 2 * dt;
         baseSurface.position.x -= backgroundVelocity.x / 2 * dt;
+        fireSurface.position.x -= backgroundVelocity.x / 2 * dt;
       }
       _removeOffscreenCoins();
       _removeOffscreenBaseSurfaces();
       _removeOffscreenJails();
-
+      _removeOffscreenFireSurfaces();
     }
   }
 
-  /// Removes coins and their associated text that go off-screen.
+  /// Removes off-screen elements.
   void _removeOffscreenCoins() {
     for (int i = coins.length - 1; i >= 0; i--) {
-      final coin = coins[i];
-      final text = coinTexts[i];
-      if (coin.position.x / 2 + coin.size.x < 0) {
-        remove(coin);
-        remove(text);
+      if (coins[i].position.x / 2 + coins[i].size.x < 0) {
+        remove(coins[i]);
+        remove(coinTexts[i]);
         coins.removeAt(i);
         coinTexts.removeAt(i);
       }
     }
   }
 
-  /// Removes jail images that go off-screen.
   void _removeOffscreenJails() {
     for (int i = jails.length - 1; i >= 0; i--) {
-      final jail = jails[i];
-      if (jail.position.x / 2 + jail.size.x < 0) {
-        remove(jail);
+      if (jails[i].position.x / 2 + jails[i].size.x < 0) {
+        remove(jails[i]);
         jails.removeAt(i);
       }
     }
   }
-  /// Removes baseSurface images that go off-screen.
+
   void _removeOffscreenBaseSurfaces() {
     for (int i = baseSurfaces.length - 1; i >= 0; i--) {
-      final baseSurface = baseSurfaces[i];
-      if (baseSurface.position.x / 2 + baseSurface.size.x < 0) {
-        remove(baseSurface);
+      if (baseSurfaces[i].position.x / 2 + baseSurfaces[i].size.x < 0) {
+        remove(baseSurfaces[i]);
         baseSurfaces.removeAt(i);
       }
     }
+  }
+
+  void _removeOffscreenFireSurfaces() {
+    for (int i = fireSurfaces.length - 1; i >= 0; i--) {
+      if (fireSurfaces[i].position.x / 2 + fireSurfaces[i].size.x < 0) {
+        remove(fireSurfaces[i]);
+        fireSurfaces.removeAt(i);
+      }
+    }
+  }
+
+  Vector2 _generateRandomFirePosition() {
+    final Random random = Random();
+    double randomX =
+        random.nextDouble() * game.size.x; // Anywhere within the screen width
+    double randomY = 200 + random.nextDouble() * 150; // Between Y=300 and Y=450
+
+    return Vector2(randomX, randomY);
+  }
+
+  /// **Handles the fire repositioning timer**
+  void startFireRepositioning() {
+    _fireRepositionTimer?.cancel(); // Cancel existing timer if any
+
+    _fireRepositionTimer =
+        dart_async.Timer.periodic(Duration(seconds: 2), (timer) {
+      debugPrint("Fire repositioning triggered!");
+
+      if (fireSurfaces.isEmpty) return;
+
+      // Hide all fires first
+      for (var fire in fireSurfaces) {
+        fire.position = Vector2(-100, -100); // Move them off-screen
+      }
+
+      // Select a random fire index
+      final Random random = Random();
+      int randomIndex = random.nextInt(fireSurfaces.length);
+
+      // Set position of only the selected fire
+      fireSurfaces[randomIndex].position = _generateRandomFirePosition();
+    });
+  }
+
+  /// **Stops and cleans up the timer when component is removed**
+  @override
+  void onRemove() {
+    _fireRepositionTimer?.cancel();
+    _fireRepositionTimer = null;
+    super.onRemove();
   }
 }

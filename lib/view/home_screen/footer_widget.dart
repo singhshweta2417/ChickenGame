@@ -2,7 +2,6 @@ import 'package:chicken_game/main.dart';
 import 'package:chicken_game/res/color_constant.dart';
 import 'package:chicken_game/res/primary_button.dart';
 import 'package:chicken_game/res/text_widget.dart';
-import 'package:chicken_game/view/testchicken.dart';
 import 'package:flutter/material.dart';
 
 class FooterWidget extends StatefulWidget {

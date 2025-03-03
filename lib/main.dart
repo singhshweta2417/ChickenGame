@@ -1,7 +1,4 @@
 import 'package:chicken_game/res/app_constant.dart';
-import 'package:chicken_game/utils/routes/routes.dart';
-import 'package:chicken_game/utils/routes/routes_name.dart';
-import 'package:chicken_game/view/auth/login_screen.dart';
 import 'package:chicken_game/view/main_page.dart';
 import 'package:flutter/material.dart';
 

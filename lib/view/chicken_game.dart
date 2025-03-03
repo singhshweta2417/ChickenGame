@@ -13,7 +13,6 @@ class ChickenGame extends FlameGame<ChickenGameWorld> {
   void toggleBackgroundMovement() {
     world.background.toggleMovement();
   }
-
 }
 
 class ChickenGameWorld extends World {
