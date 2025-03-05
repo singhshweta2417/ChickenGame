@@ -12,14 +12,14 @@ class ChickenDash extends SpriteAnimationComponent {
   late Sprite _dashSprite;
   Vector2 _movementDirection = Vector2.zero();
 
-  bool _isLoaded = false;
+  final bool _isLoaded = false;
 
   @override
   Future<void> onLoad() async {
     try {
       final List<Sprite> frames = [];
 
-      for (var i = 1; i <= 31; i++) {
+      for (var i = 1; i <= 30; i++) {
         try {
           final String imagePath = 'chickens/chicken$i.png';
           print('Loading image: $imagePath');
@@ -35,14 +35,7 @@ class ChickenDash extends SpriteAnimationComponent {
       }
 
       if (frames.isNotEmpty) {
-        animation = SpriteAnimation.spriteList(frames, stepTime: 0.1);
-      }
-
-      try {
-        _dashSprite = await Sprite.load('chickens/chicken1.png');
-        _isLoaded = true;
-      } catch (e) {
-        print('Failed to load dash sprite: $e');
+        animation = SpriteAnimation.spriteList(frames, stepTime: 0.03);
       }
     } catch (e) {
       print('Failed to load chicken animation: $e');

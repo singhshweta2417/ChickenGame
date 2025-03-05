@@ -15,14 +15,19 @@ class ChickenGame extends FlameGame<ChickenGameWorld> {
   }
 }
 
+
 class ChickenGameWorld extends World {
-  late ChickenDashParallaxBackground background;
+  late final ChickenDashParallaxBackground background;
+  late final ChickenDash chicken;
+
   @override
   Future<void> onLoad() async {
-    // TODO: implement onLoad
-    super.onLoad();
+    // Initialize and add the background
     background = ChickenDashParallaxBackground();
-    await add(background);
-    add(ChickenDash());
+    add(background);
+
+    // Initialize and add the chicken
+    chicken = ChickenDash();
+    add(chicken);
   }
 }
