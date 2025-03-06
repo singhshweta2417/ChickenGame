@@ -2,7 +2,9 @@
 class Assets {
   Assets._();
 
+  static const String backgroundBackgroundDoor = 'assets/images/background/background_door.png';
   static const String backgroundBackgroundImage = 'assets/images/background/background_image.png';
+  static const String backgroundBackgroundPlain = 'assets/images/background/background_plain.png';
   static const String chickensChicken1 = 'assets/images/chickens/chicken1.png';
   static const String chickensChicken10 = 'assets/images/chickens/chicken10.png';
   static const String chickensChicken11 = 'assets/images/chickens/chicken11.png';

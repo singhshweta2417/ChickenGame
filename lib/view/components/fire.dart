@@ -28,7 +28,7 @@ class FireDash extends SpriteAnimationComponent {
       // Create the SpriteAnimation from the frames
       animation = SpriteAnimation.spriteList(
         frames,
-        stepTime: 0.03,
+        stepTime: 0.08,
       );
 
       print('Fire animation loaded successfully');
