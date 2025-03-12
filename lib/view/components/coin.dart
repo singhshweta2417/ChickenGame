@@ -1,26 +1,31 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-import '../chicken_game.dart';
+class Coin extends PositionComponent {
+  Coin({required Vector2 position})
+      : super(position: position, size: Vector2.all(150));
 
-class Coin extends SpriteComponent with HasGameRef<ChickenGame> {
-  bool isGreen = false; // Track if the coin is green
-
-  Coin({required Vector2 position}) : super(position: position);
-
+  late Sprite greySprite;
+  late Sprite greenSprite;
+  bool isCollected = false;
   @override
   Future<void> onLoad() async {
-    // Load the initial grey coin sprite
-    sprite = await gameRef.loadSprite('coins/grey_coin.png');
-    size = Vector2(50, 50); // Set the size of the coin
+    try {
+      greySprite = await Sprite.load('grey_coin.png');
+      greenSprite = await Sprite.load('green_coin.png');
+      print('Coin sprites loaded successfully');
+    } catch (e) {
+      print('Failed to load coin sprites: $e');
+    }
   }
 
-  void flipToGreen() async {
-    // Flip the coin horizontally
-     flipHorizontallyAroundCenter();
+  void flipCoin() {
+    isCollected = true;
+    print('flip hua h');
+  }
 
-    // Change the coin's appearance to green
-    sprite = await gameRef.loadSprite('coins/green_coin.png');
-    isGreen = true;
+  @override
+  void render(Canvas canvas) {
+    (isCollected ? greenSprite : greySprite).render(canvas, position: position, size: size);
   }
 }

@@ -1,84 +1,100 @@
 import 'package:flame/components.dart';
+import 'coin.dart';
 
-class ChickenDash extends SpriteAnimationComponent {
-  ChickenDash()
-      : super(
-          position: Vector2(-280, 260),
+enum ChickenState { idle, running }
+
+class ChickenDash extends SpriteAnimationGroupComponent<ChickenState> {
+  final List<Vector2> pathPoints;
+  List<Coin> coins = [];
+
+  ChickenDash({
+    required List<Vector2> coinPositions,
+    required this.coins,
+  })  : pathPoints = coinPositions.isNotEmpty
+            ? coinPositions.map((coin) => coin.clone()).toList()
+            : [],
+        super(
+          position: coinPositions.isNotEmpty
+              ? coinPositions.first.clone()
+              : Vector2(-280, 260),
           size: Vector2.all(200.0),
           anchor: Anchor.center,
-        );
+        ) {
+    print("Coins List Received in ChickenDash: $coins");
+    print("Total Coins in ChickenDash: ${coins.length}");
+  }
 
   late SpriteAnimation _idleAnimation;
   late SpriteAnimation _runAnimation;
-  Vector2 _movementDirection = Vector2.zero();
 
-  final double chickenSpeed = 80.0; // Pixels per second
+  final double chickenSpeed = 80.0;
+
+  int currentIndex = 0;
+  bool isMoving = false;
+  Vector2 _targetPosition = Vector2.zero();
 
   @override
   Future<void> onLoad() async {
     try {
-      final List<Sprite> idleFrames = [];
-      final List<Sprite> runFrames = [];
+      _idleAnimation = await _loadAnimation('chickens/chicken', 30, 0.03);
+      _runAnimation = await _loadAnimation('chickens/chicken_run', 4, 0.2);
 
-      // Load idle animation frames (chicken1.png to chicken30.png)
-      for (var i = 1; i <= 30; i++) {
-        try {
-          final String imagePath = 'chickens/chicken$i.png';
-          final sprite = await Sprite.load(imagePath);
-          idleFrames.add(sprite);
-        } catch (e) {
-          print('Skipping invalid image: chickens/chicken$i.png - Error: $e');
-        }
+      animations = {
+        ChickenState.idle: _idleAnimation,
+        ChickenState.running: _runAnimation,
+      };
+
+      current = ChickenState.idle;
+      if (pathPoints.isNotEmpty) {
+        _targetPosition = pathPoints[currentIndex];
       }
-
-      // Load run animation frames (chicken_run1.png to chicken_runN.png)
-      for (var i = 1; i <= 4; i++) {
-        try {
-          final String imagePath = 'chickens/chicken_run$i.png';
-          final sprite = await Sprite.load(imagePath);
-          runFrames.add(sprite);
-        } catch (e) {
-          print(
-              'Skipping invalid image: chickens/chicken_run$i.png - Error: $e');
-        }
-      }
-
-      if (idleFrames.isNotEmpty) {
-        _idleAnimation = SpriteAnimation.spriteList(idleFrames, stepTime: 0.03);
-      } else {
-        throw Exception('No idle frames loaded');
-      }
-
-      if (runFrames.isNotEmpty) {
-        _runAnimation = SpriteAnimation.spriteList(runFrames, stepTime: 0.2);
-      } else {
-        throw Exception('No run frames loaded');
-      }
-
-      // Set initial animation to idle
-      animation = _idleAnimation;
     } catch (e) {
-      print('Failed to load chicken animations: $e');
+      print('Failed to load animations: $e');
     }
   }
 
-  void moveInDirection(Vector2 direction) {
-    _movementDirection = direction;
-    if (direction != Vector2.zero()) {
-      animation = _runAnimation; // Switch to run animation
-    } else {
-      animation = _idleAnimation; // Switch to idle animation
+  Future<SpriteAnimation> _loadAnimation(
+      String basePath, int count, double stepTime) async {
+    final List<Sprite> frames = [];
+    for (var i = 1; i <= count; i++) {
+      try {
+        frames.add(await Sprite.load('$basePath$i.png'));
+      } catch (_) {}
+    }
+    if (frames.isEmpty) throw Exception('❌ No frames loaded for $basePath');
+    return SpriteAnimation.spriteList(frames, stepTime: stepTime);
+  }
+
+  void moveToNextPoint() {
+    if (!isMoving && currentIndex < pathPoints.length - 1) {
+      currentIndex++;
+      _targetPosition = pathPoints[currentIndex];
+      isMoving = true;
+      current = ChickenState.running;
     }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    position += _movementDirection * dt * chickenSpeed;
-  }
 
-  void stopMovement() {
-    _movementDirection = Vector2.zero();
-    animation = _idleAnimation; // Switch to idle animation
+    if (isMoving) {
+      final direction = (_targetPosition - position).normalized();
+      position += direction * chickenSpeed * dt;
+
+      if (position.distanceTo(_targetPosition) < 2.0) {
+        position = _targetPosition;
+        isMoving = false;
+        current = ChickenState.idle;
+
+        // ✅ Check and flip coins if near
+        for (var coin in coins) {
+          if (coin.position.distanceTo(position) < 10.0) {
+            coin.flipCoin();
+            print('🟡 Coin flipped at ${coin.position}!');
+          }
+        }
+      }
+    }
   }
 }

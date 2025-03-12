@@ -3,6 +3,8 @@ import 'package:chicken_game/view/components/chicken_parallex_background.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 
+import 'components/coin.dart';
+
 class ChickenGame extends FlameGame<ChickenGameWorld> {
   ChickenGame()
       : super(
@@ -15,29 +17,36 @@ class ChickenGame extends FlameGame<ChickenGameWorld> {
   }
 }
 
-
 class ChickenGameWorld extends World {
   late final ChickenDashParallaxBackground background;
   late final ChickenDash chicken;
+  bool isMoving = false;
 
   @override
   Future<void> onLoad() async {
-    // Initialize and add the background
-    background = ChickenDashParallaxBackground();
+    background = ChickenDashParallaxBackground(
+      onCoinsReady: (List<Coin> coins) {
+        chicken = ChickenDash(
+          coinPositions: coins.map((coin) => coin.position).toList(),
+          coins: coins,
+        );
+        add(chicken);
+      },
+    );
     add(background);
-
-    // Initialize and add the chicken
-    chicken = ChickenDash();
-    add(chicken);
   }
+
   void toggleMovement() {
-    if (background.isMoving) {
-      background.parallax?.baseVelocity = Vector2.zero();
-      chicken.stopMovement();
+    isMoving = !isMoving;
+    if (isMoving) {
+      chicken.moveToNextPoint();
+      background.parallax?.baseVelocity = Vector2(-50, 0);
     } else {
-      background.parallax?.baseVelocity = ChickenDashParallaxBackground.backgroundVelocity;
-      chicken.moveInDirection(Vector2(1, 0));
+      background.parallax?.baseVelocity = Vector2.zero();
     }
-    background.isMoving = !background.isMoving;
+    print("Background velocity: ${background.parallax?.baseVelocity}");
   }
 }
+
+
+
