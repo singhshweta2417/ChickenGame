@@ -8,9 +8,9 @@ import 'components/coin.dart';
 class ChickenGame extends FlameGame<ChickenGameWorld> {
   ChickenGame()
       : super(
-    world: ChickenGameWorld(),
-    camera: CameraComponent.withFixedResolution(width: 800, height: 700),
-  );
+          world: ChickenGameWorld(),
+          camera: CameraComponent.withFixedResolution(width: 800, height: 700),
+        );
 
   void toggleBackgroundMovement() {
     world.toggleMovement();
@@ -47,6 +47,3 @@ class ChickenGameWorld extends World {
     print("Background velocity: ${background.parallax?.baseVelocity}");
   }
 }
-
-
-
