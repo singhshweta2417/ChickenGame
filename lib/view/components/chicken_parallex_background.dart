@@ -37,7 +37,7 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     try {
       parallax = await game.loadParallax(
         [ParallaxImageData('background/background_image.png')],
-        baseVelocity: Vector2(20, 0), // Background scrolls to the left
+        baseVelocity: Vector2(30, 0), // Background scrolls to the left
         velocityMultiplierDelta: Vector2(1.5, 0),
         fill: LayerFill.height,
         repeat: ImageRepeat.repeat,
@@ -158,7 +158,7 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     _showRandomFire();
 
     _fireRepositionTimer =
-        dart_async.Timer.periodic(Duration(seconds: 1), (timer) {
+        dart_async.Timer.periodic(Duration(milliseconds: 500), (timer) {
           debugPrint("Fire repositioning triggered!");
 
           if (fireSurfaces.isEmpty) return;

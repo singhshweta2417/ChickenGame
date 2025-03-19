@@ -5,13 +5,13 @@ import 'package:flutter/cupertino.dart';
 class FireDash extends SpriteAnimationComponent with CollisionCallbacks {
   FireDash({required Vector2 position})
       : super(
-          position: position,
-          size: Vector2(150, 80),
-        );
+    position: position,
+    size: Vector2(150, 80),
+  );
 
   @override
   Future<void> onLoad() async {
-    // Add a hitbox for collision detection
+    // Add a hit box for collision detection
     add(RectangleHitbox());
 
     try {
@@ -38,7 +38,7 @@ class FireDash extends SpriteAnimationComponent with CollisionCallbacks {
       // Create the SpriteAnimation from the frames
       animation = SpriteAnimation.spriteList(
         frames,
-        stepTime: 0.08,
+        stepTime: 0.5,
       );
 
       debugPrint('Fire animation loaded successfully');

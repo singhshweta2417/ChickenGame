@@ -44,7 +44,7 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
 
   @override
   Future<void> onLoad() async {
-    add(RectangleHitbox());
+    add(RectangleHitbox()..debugMode = true);
     try {
       _idleAnimation = await _loadAnimation('chickens/chicken', 30, 0.03);
       _runAnimation = await _loadAnimation('chickens/chicken_run', 4, 0.2);
@@ -70,7 +70,8 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
   }
 
   Future<SpriteAnimation> _loadAnimation(
-      String basePath, int count, double stepTime) async {
+      String basePath, int count, double stepTime) async
+  {
     final List<Sprite> frames = [];
     for (var i = 1; i <= count; i++) {
       try {
@@ -144,22 +145,42 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
 
   @override
   void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
+      Set<Vector2> intersectionPoints, PositionComponent other)
+  {
     super.onCollisionStart(intersectionPoints, other);
 
+    debugPrint("🔥 Collision detected with: ${other.runtimeType}");
+
     if (other is FireDash) {
-      // Trigger the burning effect
-      burnChicken();
+      debugPrint("🔥 Chicken touched FireDash!");
+      _handleFireCollision();
     }
   }
 
-  void burnChicken() {
-    // Show the big fire animation
-    final bigFire = BigFireAnimation(position: position);
+  void _handleFireCollision() {
+    // Stop the chicken's movement and animation
+    current = ChickenState.idle;
+    isMoving = false;
+
+    // Store the chicken's position before removing it
+    final Vector2 firePosition = position.clone();
+
+    // Remove the chicken from the game
+    removeFromParent();
+
+    // Show the big fire animation at the chicken's last position
+    final bigFire = BigFireAnimation(position: firePosition);
     gameRef.add(bigFire);
 
-    // Trigger game over
-    gameRef.pauseEngine();
-    gameRef.overlays.add('GameOverOverlay');
+    // Delay Game Over screen to let animation play
+    _showGameOver();
   }
+
+  void _showGameOver() {
+    Future.delayed(Duration(seconds: 1), () {
+      gameRef.pauseEngine();
+      gameRef.overlays.add('GameOverOverlay');
+    });
+  }
+
 }

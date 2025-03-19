@@ -27,7 +27,6 @@ class BigFireAnimation extends SpriteAnimationComponent {
         stepTime: 0.1, // Adjust animation speed
         loop: false, // Play once
       );
-
     } catch (e) {
       debugPrint('Failed to load big fire animation: $e');
     }
@@ -40,4 +39,5 @@ class BigFireAnimation extends SpriteAnimationComponent {
       removeFromParent();
     }
   }
+
 }
