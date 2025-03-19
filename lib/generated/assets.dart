@@ -41,6 +41,14 @@ class Assets {
   static const String chickensChickenRun4 = 'assets/images/chickens/chicken_run4.png';
   static const String iconsIndianIcon = 'assets/icons/indian_icon.png';
   static const String imagesBaseFireImage = 'assets/images/base_fire_image.png';
+  static const String imagesBigFire1 = 'assets/images/big_fire1.png';
+  static const String imagesBigFire2 = 'assets/images/big_fire2.png';
+  static const String imagesBigFire3 = 'assets/images/big_fire3.png';
+  static const String imagesBigFire4 = 'assets/images/big_fire4.png';
+  static const String imagesBigFire5 = 'assets/images/big_fire5.png';
+  static const String imagesBigFire6 = 'assets/images/big_fire6.png';
+  static const String imagesBigFire7 = 'assets/images/big_fire7.png';
+  static const String imagesBigFire8 = 'assets/images/big_fire8.png';
   static const String imagesChickenLogo = 'assets/images/chicken_logo.png';
   static const String imagesFire1 = 'assets/images/fire1.png';
   static const String imagesFire10 = 'assets/images/fire10.png';

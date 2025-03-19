@@ -1,6 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
+import 'fire.dart';
+
 class Coin extends PositionComponent {
   Coin({required Vector2 position})
       : super(position: position, size: Vector2.all(150));
@@ -8,6 +10,8 @@ class Coin extends PositionComponent {
   late Sprite greySprite;
   late Sprite greenSprite;
   bool isCollected = false;
+  FireDash? fire; // Reference to the FireDash component
+
   @override
   Future<void> onLoad() async {
     try {
@@ -19,9 +23,17 @@ class Coin extends PositionComponent {
     }
   }
 
+  void setFire(FireDash fireComponent) {
+    fire = fireComponent;
+  }
+
   void flipCoin() {
     isCollected = true;
-    print('flip hua h');
+    if (fire != null) {
+      fire!.removeFromParent(); // Remove the fire when the coin is flipped
+      fire = null; // Clear the reference
+    }
+    print('🟡 Coin flipped and fire removed!');
   }
 
   @override

@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'dart:async' as dart_async;
 import 'background_door.dart';
 
-
 class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   bool isMoving = false;
   ChickenDashParallaxBackground({required this.onCoinsReady});
@@ -30,6 +29,7 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   List<Vector2> get coinPositions => coins.map((coin) => coin.position.clone()).toList();
   dart_async.Timer? _fireRepositionTimer;
   late BackgroundDoorDash backgroundDoorDash;
+
   @override
   Future<void> onLoad() async {
     anchor = Anchor.center;
@@ -37,22 +37,23 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     try {
       parallax = await game.loadParallax(
         [ParallaxImageData('background/background_image.png')],
-        baseVelocity: Vector2.zero(),
-        velocityMultiplierDelta: Vector2(2, 0),
+        baseVelocity: Vector2(20, 0), // Background scrolls to the left
+        velocityMultiplierDelta: Vector2(1.5, 0),
         fill: LayerFill.height,
         repeat: ImageRepeat.repeat,
       );
       _addCoins();
       onCoinsReady(coins);
       _storeOriginalFirePositions();
-      // _hideAllFires();
       startFireRepositioning();
     } catch (e) {
       debugPrint('Error loading parallax background or coins: $e');
     }
   }
-
-
+  void toggleMovement(bool move) {
+    isMoving = move;
+    debugPrint('Background movement toggled: $move');
+  }
   @override
   void update(double dt) {
     super.update(dt);
@@ -85,7 +86,6 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     }
   }
 
-
   void _addCoins() {
     final double startY = game.size.y / 6;
 
@@ -96,29 +96,34 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     for (int i = 0; i < numberOfCoins; i++) {
       final coinPosition = Vector2(coinStartX + i * coinSpacing, startY);
 
+      // Create and add the jail
       final jail = BackgroundJailDash(position: coinPosition + Vector2(-15, -120));
       jails.add(jail);
       jail.priority = 2;
       add(jail);
-      for (int i = 0; i < numberOfCoins; i++) {
-        final coin = Coin(
-            position: Vector2(coinStartX + i * coinSpacing, game.size.y / 6));
 
+      // Create and add the coin
+      final coin = Coin(position: coinPosition);
       coins.add(coin);
       coin.priority = 3;
       add(coin);
-      }
-      final coin = Coin(position: coinPosition);
+
+      // Create and add the base surface
       final baseSurface = BaseBackGroundDash(position: coinPosition + Vector2(-8, 220));
       baseSurfaces.add(baseSurface);
       baseSurface.priority = 4;
       add(baseSurface);
 
+      // Create and add the fire
       final fireSurface = FireDash(position: coinPosition + Vector2(100, 480));
       fireSurfaces.add(fireSurface);
       fireSurface.priority = 5;
       add(fireSurface);
 
+      // Link the fire to the coin
+      coin.setFire(fireSurface);
+
+      // Create and add the text
       final text = TextComponent(
         text: '${i + 1}',
         position: coinPosition + Vector2(coin.size.x / 0.8, -textOffsetY),
@@ -154,15 +159,15 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
 
     _fireRepositionTimer =
         dart_async.Timer.periodic(Duration(seconds: 1), (timer) {
-      debugPrint("Fire repositioning triggered!");
+          debugPrint("Fire repositioning triggered!");
 
-      if (fireSurfaces.isEmpty) return;
+          if (fireSurfaces.isEmpty) return;
 
-      for (var fire in fireSurfaces) {
-        fire.position = Vector2(-80, -100);
-      }
-      _showRandomFire();
-    });
+          for (var fire in fireSurfaces) {
+            fire.position = Vector2(-80, -100);
+          }
+          _showRandomFire();
+        });
   }
 
   void _showRandomFire() {
@@ -188,9 +193,9 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
 
   void _removeBackgroundDoor() {
     for (int i = jails.length - 1; i >= 0; i--) {
-    if (backgroundDoorDash.parent != null&& jails[i].size.x < 0) {
-      remove(backgroundDoorDash);
-    }
+      if (backgroundDoorDash.parent != null && jails[i].size.x < 0) {
+        remove(backgroundDoorDash);
+      }
     }
   }
 
@@ -228,10 +233,3 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     super.onRemove();
   }
 }
-
-
-// void _hideAllFires() {
-//     for (var fire in fireSurfaces) {
-//       fire.position = Vector2(-100, -100);
-//     }
-//   }
