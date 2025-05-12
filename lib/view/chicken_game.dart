@@ -2,7 +2,6 @@ import 'package:chicken_game/view/components/chicken_dash.dart';
 import 'package:chicken_game/view/components/chicken_parallex_background.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-
 import 'components/coin.dart';
 
 class ChickenGame extends FlameGame<ChickenGameWorld> {
@@ -36,14 +35,13 @@ class ChickenGameWorld extends World {
     add(background);
   }
 
-  void toggleMovement() {
+  Future<void> toggleMovement() async {
     isMoving = !isMoving;
     if (isMoving) {
-      chicken.moveToNextPoint();
       background.parallax?.baseVelocity = Vector2(-50, 0);
+      chicken.moveToNextPoint();
     } else {
       background.parallax?.baseVelocity = Vector2.zero();
     }
-    print("Background velocity: ${background.parallax?.baseVelocity}");
   }
 }

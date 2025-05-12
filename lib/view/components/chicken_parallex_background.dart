@@ -24,7 +24,7 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   static const double coinSpacing = 100;
   static const double coinStartX = 110;
   static const int numberOfCoins = 10;
-  static Vector2 backgroundVelocity = Vector2(25, 0);
+  static Vector2 backgroundVelocity = Vector2(40, 0);
   static const double textOffsetY = -190;
   List<Vector2> get coinPositions => coins.map((coin) => coin.position.clone()).toList();
   dart_async.Timer? _fireRepositionTimer;
@@ -37,7 +37,7 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     try {
       parallax = await game.loadParallax(
         [ParallaxImageData('background/background_image.png')],
-        baseVelocity: Vector2(30, 0), // Background scrolls to the left
+        baseVelocity: Vector2(35, 0), // Background scrolls to the left
         velocityMultiplierDelta: Vector2(1.5, 0),
         fill: LayerFill.height,
         repeat: ImageRepeat.repeat,
@@ -50,10 +50,12 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
       debugPrint('Error loading parallax background or coins: $e');
     }
   }
+
   void toggleMovement(bool move) {
     isMoving = move;
     debugPrint('Background movement toggled: $move');
   }
+
   @override
   void update(double dt) {
     super.update(dt);
@@ -232,4 +234,5 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     _fireRepositionTimer = null;
     super.onRemove();
   }
+
 }

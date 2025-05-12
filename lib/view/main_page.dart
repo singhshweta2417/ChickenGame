@@ -17,6 +17,13 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     _chickenGame = ChickenGame();
   }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _chickenGame.pauseEngine();
+    } else if (state == AppLifecycleState.resumed) {
+      _chickenGame.resumeEngine();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,6 @@ class _MainPageState extends State<MainPage> {
               );
             },
           ),
-
           Positioned(
             bottom: 20,
             right: 20,
@@ -46,4 +52,5 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
 }

@@ -19,7 +19,7 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
   })  : pathPoints = List.from(coinPositions), // Ensures safe copying
         super(
           position: Vector2(-280, 260),
-          size: Vector2.all(200.0),
+          size: Vector2.all(180.0),
           anchor: Anchor.center,
         ) {
     print("Coins List Received in ChickenDash: $coins");
@@ -34,7 +34,7 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
   Vector2 _targetPosition = Vector2.zero();
   Vector2 _originalCoinPosition =
       Vector2.zero(); // Store the original coin position
-  double chickenSpeed = 50.0; // Base speed
+  double chickenSpeed = 25.0; // Base speed
   double speedMultiplier =
       2.0; // Speed multiplier (can be adjusted dynamically)
 
@@ -70,8 +70,7 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
   }
 
   Future<SpriteAnimation> _loadAnimation(
-      String basePath, int count, double stepTime) async
-  {
+      String basePath, int count, double stepTime) async {
     final List<Sprite> frames = [];
     for (var i = 1; i <= count; i++) {
       try {
@@ -87,9 +86,20 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
   void moveToNextPoint() {
     if (!isMoving && currentIndex < pathPoints.length) {
       _targetPosition = Vector2(
-        pathPoints[currentIndex].x - 200,
+        currentIndex == 0
+            ? pathPoints[currentIndex].x - 290
+            : currentIndex == 1
+                ? pathPoints[currentIndex].x - 230
+                : currentIndex == 2
+                    ? pathPoints[currentIndex].x - 170
+                    : currentIndex == 3
+                        ? pathPoints[currentIndex].x - 120
+                        : currentIndex == 4
+                            ? pathPoints[currentIndex].x - 60
+                            : pathPoints[currentIndex].x - 10,
         pathPoints[currentIndex].y + 130,
       );
+      print('pathPoints.x:${pathPoints[currentIndex].x}');
       _originalCoinPosition =
           pathPoints[currentIndex]; // Store the original coin position
       isMoving = true;
@@ -145,8 +155,7 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
 
   @override
   void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other)
-  {
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
 
     debugPrint("🔥 Collision detected with: ${other.runtimeType}");
@@ -168,9 +177,14 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
     // Remove the chicken from the game
     removeFromParent();
 
-    // Show the big fire animation at the chicken's last position
     final bigFire = BigFireAnimation(position: firePosition);
     gameRef.add(bigFire);
+
+// Show overlay right after adding the fire
+    Future.delayed(Duration(milliseconds: 200), () {
+      gameRef.pauseEngine();
+      gameRef.overlays.add('GameOverOverlay'); // or your desired overlay
+    });
 
     // Delay Game Over screen to let animation play
     _showGameOver();
@@ -182,5 +196,4 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
       gameRef.overlays.add('GameOverOverlay');
     });
   }
-
 }
