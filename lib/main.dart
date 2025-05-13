@@ -1,4 +1,5 @@
 import 'package:chicken_game/res/app_constant.dart';
+import 'package:chicken_game/view/flutter/chicken_home_screen.dart';
 import 'package:chicken_game/view/main_page.dart';
 import 'package:flutter/material.dart';
 
@@ -7,15 +8,15 @@ void main() {
 }
 
 
-double height = 0;
-double width = 0;
+double screenHeight = 0;
+double screenWidth = 0;
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstant.appName,
@@ -28,7 +29,9 @@ class MyApp extends StatelessWidget {
       //   }
       //   return null;
       // },
-      home: MainPage(),
+      home:
+      // ChickenHomeScreen()
+      MainPage(),
     );
   }
 }

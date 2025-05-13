@@ -64,3 +64,68 @@
 //     }
 //   }
 // }
+import 'package:flutter/material.dart';
+
+import 'package:flutter/scheduler.dart';
+
+
+class ScrollingBackground extends StatefulWidget {
+  const ScrollingBackground({super.key});
+
+  @override
+  State<ScrollingBackground> createState() => _ScrollingBackgroundState();
+}
+
+class _ScrollingBackgroundState extends State<ScrollingBackground>
+    with SingleTickerProviderStateMixin {
+  late Ticker _ticker;
+  double _offset = 0.0;
+  final double _speed = 50.0; // Pixels per second
+  late double screenWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = createTicker(_onTick)..start();
+  }
+
+  void _onTick(Duration elapsed) {
+    setState(() {
+      _offset -= _speed / 80; // Approx. 60 FPS
+      if (_offset <= -screenWidth) {
+        _offset += screenWidth;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          // First background image
+          Transform.translate(
+            offset: Offset(_offset, 0),
+            child:ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context,index){
+
+              return Center(
+                child: Text('dfbjk${index+1}'),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

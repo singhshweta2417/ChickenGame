@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'dart:async' as dart_async;
 import 'background_door.dart';
 
-class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
+class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> { //parallaxComponent is a special component used to create parallax scrolling effects,
   bool isMoving = false;
   ChickenDashParallaxBackground({required this.onCoinsReady});
   final List<Coin> coins = [];
@@ -26,7 +26,8 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   static const int numberOfCoins = 10;
   static Vector2 backgroundVelocity = Vector2(40, 0);
   static const double textOffsetY = -190;
-  List<Vector2> get coinPositions => coins.map((coin) => coin.position.clone()).toList();
+  List<Vector2> get coinPositions =>
+      coins.map((coin) => coin.position.clone()).toList();
   dart_async.Timer? _fireRepositionTimer;
   late BackgroundDoorDash backgroundDoorDash;
 
@@ -59,7 +60,6 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   @override
   void update(double dt) {
     super.update(dt);
-
     if (isMoving) {
       parallax?.baseVelocity = backgroundVelocity;
 
@@ -90,7 +90,6 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
 
   void _addCoins() {
     final double startY = game.size.y / 6;
-
     backgroundDoorDash = BackgroundDoorDash(position: Vector2(0, 0));
     backgroundDoorDash.priority = 1;
     add(backgroundDoorDash);
@@ -99,7 +98,8 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
       final coinPosition = Vector2(coinStartX + i * coinSpacing, startY);
 
       // Create and add the jail
-      final jail = BackgroundJailDash(position: coinPosition + Vector2(-15, -120));
+      final jail =
+          BackgroundJailDash(position: coinPosition + Vector2(-15, -120));
       jails.add(jail);
       jail.priority = 2;
       add(jail);
@@ -111,7 +111,8 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
       add(coin);
 
       // Create and add the base surface
-      final baseSurface = BaseBackGroundDash(position: coinPosition + Vector2(-8, 220));
+      final baseSurface =
+          BaseBackGroundDash(position: coinPosition + Vector2(-8, 220));
       baseSurfaces.add(baseSurface);
       baseSurface.priority = 4;
       add(baseSurface);
@@ -161,15 +162,15 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
 
     _fireRepositionTimer =
         dart_async.Timer.periodic(Duration(milliseconds: 500), (timer) {
-          debugPrint("Fire repositioning triggered!");
+      debugPrint("Fire repositioning triggered!");
 
-          if (fireSurfaces.isEmpty) return;
+      if (fireSurfaces.isEmpty) return;
 
-          for (var fire in fireSurfaces) {
-            fire.position = Vector2(-80, -100);
-          }
-          _showRandomFire();
-        });
+      for (var fire in fireSurfaces) {
+        fire.position = Vector2(-80, -100);
+      }
+      _showRandomFire();
+    });
   }
 
   void _showRandomFire() {
@@ -182,9 +183,10 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
     return _originalFirePositions[index];
   }
 
+
   void _removeOffscreenCoins() {
     for (int i = coins.length - 1; i >= 0; i--) {
-      if (coins[i].position.x / 2 + coins[i].size.x < 0) {
+      if (coins[i].position.x + coins[i].size.x < 0) {
         remove(coins[i]);
         remove(coinTexts[i]);
         coins.removeAt(i);
@@ -194,12 +196,13 @@ class ChickenDashParallaxBackground extends ParallaxComponent<ChickenGame> {
   }
 
   void _removeBackgroundDoor() {
-    for (int i = jails.length - 1; i >= 0; i--) {
-      if (backgroundDoorDash.parent != null && jails[i].size.x < 0) {
-        remove(backgroundDoorDash);
-      }
+    if (backgroundDoorDash.parent != null &&
+        backgroundDoorDash.position.x + backgroundDoorDash.size.x < 0) {
+      remove(backgroundDoorDash);
+      debugPrint('Removed backgroundDoorDash');
     }
   }
+
 
   void _removeOffscreenJails() {
     for (int i = jails.length - 1; i >= 0; i--) {

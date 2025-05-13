@@ -39,27 +39,27 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Container(
           margin: EdgeInsets.symmetric(
-              horizontal: width * 0.02, vertical: height * 0.05),
-          padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+              horizontal: screenWidth * 0.02, vertical: screenHeight * 0.05),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             children: [
-              SizedBox(height: height * 0.05),
+              SizedBox(height: screenHeight * 0.05),
               _buildLoginTitle(),
-              SizedBox(height: height * 0.01),
+              SizedBox(height: screenHeight * 0.01),
               _buildLoginMethodToggle(),
-              SizedBox(height: height * 0.02),
+              SizedBox(height: screenHeight * 0.02),
               _isEmailSelected ? _buildEmailField() : _buildPhoneField(),
-              SizedBox(height: height * 0.02),
+              SizedBox(height: screenHeight * 0.02),
               _buildPasswordField(),
-              SizedBox(height: height * 0.02),
+              SizedBox(height: screenHeight * 0.02),
               _buildPasswordRecoveryText(),
               Spacer(),
               _buildSignUpText(),
-              SizedBox(height: height * 0.02),
+              SizedBox(height: screenHeight * 0.02),
               _buildSignInButton(),
             ],
           ),
@@ -107,8 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        height: height * 0.065,
-        width: width * 0.45,
+        height: screenHeight * 0.065,
+        width: screenWidth * 0.45,
         decoration: BoxDecoration(
           color: isSelected ? Colors.blue : ColorConstant.textFieldBg,
           borderRadius: BorderRadius.circular(10),
@@ -153,15 +153,15 @@ class _LoginScreenState extends State<LoginScreen> {
         cursorColor: ColorConstant.white,
         labelText: 'Phone Number',
         prefixIcon: Padding(
-            padding: EdgeInsets.only(right: width * 0.02),
+            padding: EdgeInsets.only(right: screenWidth * 0.02),
             child: SizedBox(
-              width: width * 0.25,
+              width: screenWidth * 0.25,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image(
                     image: const AssetImage(Assets.iconsIndianIcon),
-                    width: width * 0.06,
+                    width: screenWidth * 0.06,
                   ),
                   textWidget(
                       text: '+91',

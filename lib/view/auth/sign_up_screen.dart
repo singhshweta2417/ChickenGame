@@ -35,20 +35,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Center(
         child: Container(
           margin: EdgeInsets.symmetric(
-              horizontal: width * 0.02, vertical: height * 0.05),
-          padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+              horizontal: screenWidth * 0.02, vertical:screenHeight *0.05),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
           decoration: BoxDecoration(
               color: ColorConstant.regBlackBg,
               borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
-              SizedBox(height: height * 0.05),
+              SizedBox(height:screenHeight *0.05),
               textWidget(
                   text: 'SIGN UP',
                   color: ColorConstant.white,
                   fontWeight: FontWeight.w900,
                   fontSize: Dimensions.twentyFour),
-              SizedBox(height: height * 0.01),
+              SizedBox(height:screenHeight *0.01),
               CustomTextField(
                   fillColor: ColorConstant.textFieldBg,
                   cursorColor: ColorConstant.white,
@@ -56,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: emailCont,
                   borderSide: const BorderSide(color: Colors.transparent),
                   labelColor: ColorConstant.white),
-              SizedBox(height: height * 0.02),
+              SizedBox(height:screenHeight *0.02),
               Row(
                 children: [
                   Flexible(
@@ -98,7 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.02),
+              SizedBox(height:screenHeight *0.02),
               CustomTextField(
                   focusNode: _focusNodePass,
                   fillColor: ColorConstant.textFieldBg,
@@ -128,7 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 label: 'SIGN UP',
                 borderRadius: BorderRadius.circular(50),
               ),
-              SizedBox(height: height * 0.05),
+              SizedBox(height:screenHeight *0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,8 +141,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                     child: Container(
                         alignment: Alignment.center,
-                        height: height * 0.025,
-                        width: width * 0.05,
+                        height:screenHeight *0.025,
+                        width: screenWidth * 0.05,
                         decoration: BoxDecoration(
                             color: isChecked
                                 ? Colors.blue
@@ -181,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ]))
                 ],
               ),
-              SizedBox(height: height * 0.02),
+              SizedBox(height:screenHeight *0.02),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(children: [
@@ -200,7 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           .merge(GoogleFonts.sourceSerif4()),
                     ),
                   ])),
-              SizedBox(height: height * 0.02),
+              SizedBox(height:screenHeight *0.02),
             ],
           ),
         ),

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:chicken_game/view/chicken_game.dart';
 import 'package:flame/game.dart';
 
+import 'components/interactive_manager.dart';
+import 'flutter/sprite_image_of_chicken.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -37,13 +40,34 @@ class _MainPageState extends State<MainPage> {
                 color: Colors.black,
               );
             },
+            overlayBuilderMap: {
+              'GameOverOverlay': (BuildContext context, ChickenGame game) {
+                return Center(
+                  child: AlertDialog(
+                    title: const Text('🔥 Game Over'),
+                    content: const Text('The chicken touched fire!'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          game.overlays.remove('GameOverOverlay');
+                          game.resumeEngine();
+                          //game.reset(); // if you have a reset method
+                        },
+                        child: const Text('Restart'),
+                      )
+                    ],
+                  ),
+                );
+              },
+            },
           ),
           Positioned(
             bottom: 20,
             right: 20,
             child: FloatingActionButton(
               onPressed: () {
-                _chickenGame.toggleBackgroundMovement();
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>StoppedChicken()));
+                // _chickenGame.toggleBackgroundMovement();
               },
               child: const Icon(Icons.touch_app),
             ),

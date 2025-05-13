@@ -15,12 +15,12 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height * 0.07,
-      width: width,
+      height: screenHeight * 0.07,
+      width: screenWidth,
       color: ColorConstant.headerBg,
       child: Row(
         children: [
-          Image.asset(Assets.imagesGoldenEgg, height: height * 0.05),
+          Image.asset(Assets.imagesGoldenEgg, height: screenHeight * 0.05),
           textWidget(
               text: 'CHICKEN\nROAD',
               fontSize: Dimensions.fifteen,
@@ -28,8 +28,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               fontWeight: FontWeight.bold),
           Spacer(),
           Container(
-            margin: EdgeInsets.symmetric(vertical: height * 0.01),
-            width: width * 0.4,
+            margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+            width: screenWidth * 0.4,
             decoration: BoxDecoration(
                 color: ColorConstant.grey.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(10)),

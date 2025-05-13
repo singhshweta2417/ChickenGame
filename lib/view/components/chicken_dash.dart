@@ -85,29 +85,68 @@ class ChickenDash extends SpriteAnimationGroupComponent<ChickenState>
 
   void moveToNextPoint() {
     if (!isMoving && currentIndex < pathPoints.length) {
+      // final getChickenLastMovementStopIndex =
+      //     pathPoints.indexWhere((e) => e.x >= 250 && e.x <= 350);
+      //
+      // // for (int i = 0; i < pathPoints.length; i++) {
+      // //   final position = pathPoints[i];
+      // //   final fixedPosition = pathPoints[getChickenLastMovementStopIndex];
+      // //   debugPrint("x: ${position.x} || y: ${position.y}");
+      // //   if (position.x <= 300) {
+      // //     _targetPosition = Vector2(position.x + 290, position.y + 130);
+      // //   } else {
+      // //     _targetPosition = Vector2(.5,  position.y + 130);
+      // //   }
+      // // }
+      // final position = pathPoints[currentIndex];
+      //
+      // // Optional alignment offset
+      // //  double xOffset =currentIndex==0? 300:200;
+      // const double yOffset = 130;
+      // if(currentIndex==0){
+      //   print("id gfgfh");
+      //   _targetPosition = Vector2(
+      //     position.x - 300,
+      //     position.y + yOffset,
+      //   );
+      // }else if(currentIndex==1){
+      //   print("ytubhdsfetygu,MediaQuery.of(context)");
+      //   _targetPosition = Vector2(
+      //     position.x - 250,
+      //     position.y + yOffset,
+      //   );
+      // }else{
+      //   print("yrmnbutnbvdtkj");
+      //   _targetPosition = Vector2(
+      //     position.x - 200,
+      //     position.y + yOffset,
+      //   );
+      // }
+
       _targetPosition = Vector2(
         currentIndex == 0
             ? pathPoints[currentIndex].x - 290
             : currentIndex == 1
-                ? pathPoints[currentIndex].x - 230
-                : currentIndex == 2
-                    ? pathPoints[currentIndex].x - 170
-                    : currentIndex == 3
-                        ? pathPoints[currentIndex].x - 120
-                        : currentIndex == 4
-                            ? pathPoints[currentIndex].x - 60
-                            : pathPoints[currentIndex].x - 10,
+            ? pathPoints[currentIndex].x - 230
+            : currentIndex == 2
+            ? pathPoints[currentIndex].x - 170
+            : currentIndex == 3
+            ? pathPoints[currentIndex].x - 120
+            : currentIndex == 4
+            ? pathPoints[currentIndex].x - 70: currentIndex == 5
+            ? pathPoints[currentIndex].x - 10: pathPoints[currentIndex].x - 0,
         pathPoints[currentIndex].y + 130,
       );
       print('pathPoints.x:${pathPoints[currentIndex].x}');
-      _originalCoinPosition =
-          pathPoints[currentIndex]; // Store the original coin position
+      print('pathPoints.y:${pathPoints[currentIndex].y}');
+      _originalCoinPosition = pathPoints[currentIndex];
       isMoving = true;
       current = ChickenState.running;
       print('🐔 Moving to coin at: $_targetPosition');
       gameRef.world.background.toggleMovement(true);
     }
   }
+
 
   @override
   void update(double dt) {

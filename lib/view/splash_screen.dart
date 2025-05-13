@@ -22,17 +22,14 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-
   @override
   Widget build(context) {
     return Scaffold(
       body: Center(
         child: SizedBox(
-            height: height * 0.25,
-            width: width * 0.5,
-            child:const Image(image: AssetImage(Assets.imagesChickenLogo)
-            )
-        ),
+            height: screenHeight * 0.25,
+            width: screenWidth * 0.5,
+            child: const Image(image: AssetImage(Assets.imagesChickenLogo))),
       ),
     );
   }

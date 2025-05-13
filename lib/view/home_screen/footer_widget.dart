@@ -20,10 +20,10 @@ class _FooterWidgetState extends State<FooterWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: height * 0.015, horizontal: width * 0.03),
+          vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
       margin: EdgeInsets.symmetric(
-          vertical: height * 0.015, horizontal: width * 0.03),
-      height: height * 0.3,
+          vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
+      height: screenHeight * 0.3,
       decoration: BoxDecoration(
           color: ColorConstant.footerBg,
           borderRadius: BorderRadius.circular(10)),
@@ -31,7 +31,7 @@ class _FooterWidgetState extends State<FooterWidget> {
         children: [
           Container(
             padding:
-                EdgeInsets.symmetric(horizontal: width * 0.02, vertical: 5),
+                EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: 5),
             decoration: BoxDecoration(
               color: ColorConstant.headerBg,
               borderRadius: BorderRadius.circular(5),
@@ -48,9 +48,9 @@ class _FooterWidgetState extends State<FooterWidget> {
               children: [
                 Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(vertical: height * 0.01),
-                  height: height * 0.04,
-                  width: width * 0.15,
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  height: screenHeight * 0.04,
+                  width: screenWidth * 0.15,
                   decoration: BoxDecoration(
                     color: ColorConstant.grey,
                     borderRadius: BorderRadius.circular(5),
@@ -68,9 +68,9 @@ class _FooterWidgetState extends State<FooterWidget> {
                     color: ColorConstant.white),
                 Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(vertical: height * 0.01),
-                  height: height * 0.04,
-                  width: width * 0.15,
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  height: screenHeight * 0.04,
+                  width: screenWidth * 0.15,
                   decoration: BoxDecoration(
                     color: ColorConstant.grey,
                     borderRadius: BorderRadius.circular(5),
@@ -94,9 +94,9 @@ class _FooterWidgetState extends State<FooterWidget> {
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(
-                      horizontal: width * 0.01, vertical: height * 0.015),
-                  height: height * 0.05,
-                  width: width * 0.2,
+                      horizontal: screenWidth * 0.01, vertical: screenHeight * 0.015),
+                  height: screenHeight * 0.05,
+                  width: screenWidth * 0.2,
                   decoration: BoxDecoration(
                     color: selectedCoin == coinList[index]
                         ? Colors.blue
@@ -125,7 +125,7 @@ class _FooterWidgetState extends State<FooterWidget> {
             }),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.02),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
             decoration: BoxDecoration(
               color: ColorConstant.headerBg,
               borderRadius: BorderRadius.circular(5),
@@ -169,14 +169,14 @@ class _FooterWidgetState extends State<FooterWidget> {
               ],
             ),
           ),
-          SizedBox(height: height * 0.02),
+          SizedBox(height: screenHeight * 0.02),
           PrimaryButton(
             onTap: () {
               // Navigator.pushReplacement(context,
               //     MaterialPageRoute(builder: (context) => HenWalking()));
             },
             color: ColorConstant.green,
-            height: height * 0.05,
+            height: screenHeight * 0.05,
             label: 'Play',
           )
         ],

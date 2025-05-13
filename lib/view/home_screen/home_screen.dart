@@ -17,13 +17,13 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          SizedBox(height: height * 0.05),
+          SizedBox(height: screenHeight * 0.05),
           HeaderWidget(),
-          SizedBox(height: height * 0.02),
+          SizedBox(height: screenHeight * 0.02),
           // SizedBox(
           //     height: height*0.45,
           //     child: MainPage()),
-          SizedBox(height: height * 0.05),
+          SizedBox(height: screenHeight * 0.05),
           FooterWidget()
         ],
       ),
