@@ -20,6 +20,8 @@ dependencies:
   country_code_picker: ^3.2.0
   flame: ^1.25.0
   flip_card: ^0.7.0
+  fluttertoast: ^8.2.12
+  provider: ^6.1.5
 
 dev_dependencies:
   flutter_test:

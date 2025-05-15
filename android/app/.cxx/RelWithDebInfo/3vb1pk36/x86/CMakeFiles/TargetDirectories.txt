@@ -1,0 +1,2 @@
+C:/Users/91979/StudioProjects/chicken_game/android/app/.cxx/RelWithDebInfo/3vb1pk36/x86/CMakeFiles/edit_cache.dir
+C:/Users/91979/StudioProjects/chicken_game/android/app/.cxx/RelWithDebInfo/3vb1pk36/x86/CMakeFiles/rebuild_cache.dir

@@ -45,9 +45,11 @@ class _StoppedChickenState extends State<StoppedChicken> {
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
-        _framePaths[_currentFrame],
-        width: 150,
-        height: 150,
+        'assets/images/chickens/shivering_chicken.gif',
+        // _framePaths[_currentFrame],
+        width: 300,
+        height: 300,
+        fit: BoxFit.cover,
       ),
     );
   }

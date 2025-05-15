@@ -6,6 +6,7 @@ class ColorConstant {
   static const green = Colors.green;
   static const regBlackBg = Color(0xff152233);
   static const textFieldBg = Color(0xff1d2d44);
+  static const fieldBg = Color(0xff3f4464);
   static const footerBg = Color(0xff3a3c51);
   static const headerBg = Color(0xff4e4f61);
   static const blueColor = Color(0xff1976d3);

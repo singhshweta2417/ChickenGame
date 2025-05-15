@@ -21,14 +21,13 @@ class _ChickenRunState extends State<ChickenRun> {
   }
 
   void _generateFramePaths() {
-    _framePaths = List.generate(4, (index) {//assets/images/chickens/chicken_run1.png
-      // Assuming Assets.imagesFire1 to Assets.imagesFire100 are all generated
-      return 'assets/images/chickens/chicken_run${index + 1}.png'; // match your asset path
+    _framePaths = List.generate(4, (index) {
+      return 'assets/images/chickens/chicken_run${index + 1}.png';
     });
   }
 
   void _startAnimation() {
-    _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 70), (timer) {
       setState(() {
         _currentFrame = (_currentFrame + 1) % _framePaths.length;
       });
@@ -45,7 +44,8 @@ class _ChickenRunState extends State<ChickenRun> {
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
-        _framePaths[_currentFrame],
+        'assets/images/chicken_gif.gif',
+        // _framePaths[_currentFrame],
         width: 150,
         height: 150,
       ),

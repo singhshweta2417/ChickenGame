@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chicken_game/view/chicken_game.dart';
 import 'package:flame/game.dart';
-
-import 'components/interactive_manager.dart';
 import 'flutter/sprite_image_of_chicken.dart';
 
 class MainPage extends StatefulWidget {

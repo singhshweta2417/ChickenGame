@@ -35,10 +35,12 @@ class Assets {
   static const String chickensChicken7 = 'assets/images/chickens/chicken7.png';
   static const String chickensChicken8 = 'assets/images/chickens/chicken8.png';
   static const String chickensChicken9 = 'assets/images/chickens/chicken9.png';
+  static const String chickensChickenRoast = 'assets/images/chickens/chicken_roast.png';
   static const String chickensChickenRun1 = 'assets/images/chickens/chicken_run1.png';
   static const String chickensChickenRun2 = 'assets/images/chickens/chicken_run2.png';
   static const String chickensChickenRun3 = 'assets/images/chickens/chicken_run3.png';
   static const String chickensChickenRun4 = 'assets/images/chickens/chicken_run4.png';
+  static const String chickensShiveringChicken = 'assets/images/chickens/shivering_chicken.gif';
   static const String iconsIndianIcon = 'assets/icons/indian_icon.png';
   static const String imagesBaseFireImage = 'assets/images/base_fire_image.png';
   static const String imagesBigFire1 = 'assets/images/big_fire1.png';
@@ -49,6 +51,7 @@ class Assets {
   static const String imagesBigFire6 = 'assets/images/big_fire6.png';
   static const String imagesBigFire7 = 'assets/images/big_fire7.png';
   static const String imagesBigFire8 = 'assets/images/big_fire8.png';
+  static const String imagesChickenGif = 'assets/images/chicken_gif.gif';
   static const String imagesChickenLogo = 'assets/images/chicken_logo.png';
   static const String imagesFire1 = 'assets/images/fire1.png';
   static const String imagesFire10 = 'assets/images/fire10.png';
@@ -150,8 +153,10 @@ class Assets {
   static const String imagesFire97 = 'assets/images/fire97.png';
   static const String imagesFire98 = 'assets/images/fire98.png';
   static const String imagesFire99 = 'assets/images/fire99.png';
+  static const String imagesFireGif = 'assets/images/fire_gif.gif';
   static const String imagesFrontJali = 'assets/images/front_jali.png';
   static const String imagesGoldenEgg = 'assets/images/golden_egg.png';
+  static const String imagesGoldenEggWall = 'assets/images/golden_egg_wall.png';
   static const String imagesGreenCoin = 'assets/images/green_coin.png';
   static const String imagesGreyCoin = 'assets/images/grey_coin.png';
 
