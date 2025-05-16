@@ -1,5 +1,4 @@
 import 'package:chicken_game/res/app_constant.dart';
-import 'package:chicken_game/view/flutter/chicken_home_screen.dart';
 import 'package:chicken_game/view/flutter/controller_chicken.dart';
 import 'package:chicken_game/view/welcome_chicken_screen.dart' show WelcomeChickenScreen;
 import 'package:flutter/material.dart';

@@ -159,5 +159,6 @@ class Assets {
   static const String imagesGoldenEggWall = 'assets/images/golden_egg_wall.png';
   static const String imagesGreenCoin = 'assets/images/green_coin.png';
   static const String imagesGreyCoin = 'assets/images/grey_coin.png';
+  static const String imagesWinChicken = 'assets/images/win_chicken.gif';
 
 }

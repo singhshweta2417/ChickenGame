@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chicken_game/main.dart';
 import 'package:flutter/material.dart';
 
 class StoppedChicken extends StatefulWidget {
@@ -43,14 +44,14 @@ class _StoppedChickenState extends State<StoppedChicken> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Image.asset(
-        'assets/images/chickens/shivering_chicken.gif',
-        // _framePaths[_currentFrame],
-        width: 300,
-        height: 300,
-        fit: BoxFit.cover,
-      ),
+    return Container(
+      width: screenWidth*0.2,
+      height: screenHeight*0.05,
+      decoration: BoxDecoration(
+          // color: Colors.blue,
+          image: DecorationImage(
+              image:
+                  AssetImage('assets/images/chickens/shivering_chicken.gif'),fit: BoxFit.cover)),
     );
   }
 }

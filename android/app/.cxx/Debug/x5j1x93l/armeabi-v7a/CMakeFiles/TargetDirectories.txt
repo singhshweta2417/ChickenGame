@@ -1,0 +1,2 @@
+C:/Users/91979/StudioProjects/chicken_game/android/app/.cxx/Debug/x5j1x93l/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/91979/StudioProjects/chicken_game/android/app/.cxx/Debug/x5j1x93l/armeabi-v7a/CMakeFiles/rebuild_cache.dir

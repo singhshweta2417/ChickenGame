@@ -2,7 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ChickenRun extends StatefulWidget {
-  const ChickenRun({super.key});
+  final bool useGif; // Switch between GIF and frame-by-frame
+  final double width;
+  final double height;
+  final BoxFit fit;
+
+  const ChickenRun({
+    super.key,
+    this.useGif = true,
+    this.width = 200,
+    this.height = 200,
+    this.fit = BoxFit.fill,
+  });
 
   @override
   State<ChickenRun> createState() => _ChickenRunState();
@@ -11,44 +22,88 @@ class ChickenRun extends StatefulWidget {
 class _ChickenRunState extends State<ChickenRun> {
   late final List<String> _framePaths;
   int _currentFrame = 0;
-  Timer? _timer;
+  Timer? _animationTimer;
 
   @override
   void initState() {
     super.initState();
-    _generateFramePaths();
-    _startAnimation();
+    if (!widget.useGif) {
+      _initializeFrameAnimation();
+    }
   }
 
-  void _generateFramePaths() {
+  void _initializeFrameAnimation() {
     _framePaths = List.generate(4, (index) {
       return 'assets/images/chickens/chicken_run${index + 1}.png';
     });
+    _startAnimation();
   }
 
   void _startAnimation() {
-    _timer = Timer.periodic(const Duration(milliseconds: 70), (timer) {
-      setState(() {
-        _currentFrame = (_currentFrame + 1) % _framePaths.length;
-      });
+    _animationTimer?.cancel(); // Cancel any existing timer
+    _animationTimer = Timer.periodic(const Duration(milliseconds: 70), (timer) {
+      if (mounted) {
+        setState(() {
+          _currentFrame = (_currentFrame + 1) % _framePaths.length;
+        });
+      }
     });
   }
 
   @override
+  void didUpdateWidget(ChickenRun oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.useGif != widget.useGif && !widget.useGif) {
+      _initializeFrameAnimation();
+    } else if (!widget.useGif && _animationTimer == null) {
+      _initializeFrameAnimation();
+    } else if (widget.useGif) {
+      _animationTimer?.cancel();
+      _animationTimer = null;
+    }
+  }
+
+  @override
   void dispose() {
-    _timer?.cancel();
+    _animationTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Image.asset(
-        'assets/images/chicken_gif.gif',
-        // _framePaths[_currentFrame],
-        width: 150,
-        height: 150,
-      ),
+      child: widget.useGif
+          ? _buildGifAnimation()
+          : _buildFrameAnimation(),
+    );
+  }
+
+  Widget _buildGifAnimation() {
+    return Image.asset(
+      'assets/images/chicken_gif.gif',
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+    );
+  }
+
+  Widget _buildFrameAnimation() {
+    return Image.asset(
+      _framePaths[_currentFrame],
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+    );
+  }
+
+  Widget _buildErrorWidget() {
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      color: Colors.grey[300],
+      child: const Icon(Icons.error_outline, color: Colors.red),
     );
   }
 }
