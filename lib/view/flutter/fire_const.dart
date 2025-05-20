@@ -45,7 +45,8 @@ class _FireGifState extends State<FireGif> {
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
-        _framePaths[_currentFrame],
+        'assets/images/small_fire.gif',
+        // _framePaths[_currentFrame],
         width: 150,
         height: 150,
       ),

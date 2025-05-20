@@ -31,7 +31,7 @@ Widget textWidget({
         maxLines: maxLines,
         overflow: maxLines != null ? TextOverflow.ellipsis : null,
         style: TextStyle(
-          fontSize: fontSize ?? Dimensions.twenty,
+          fontSize: fontSize ?? Dimensions.eighteen,
           fontWeight: fontWeight,
           color: color,
           decoration: strikethrough ? TextDecoration.lineThrough : null,

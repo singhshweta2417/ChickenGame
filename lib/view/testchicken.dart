@@ -51,3 +51,40 @@
 //     super.dispose();
 //   }
 // }
+
+import 'package:flutter/material.dart';
+
+class DynamicPyramid extends StatelessWidget {
+  final int levels = 5; // number of pyramid levels
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Dynamic Pyramid')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(levels, (levelIndex) {
+            int itemCount = levelIndex + 1; // 1 item in 1st row, 2 in 2nd, etc.
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(itemCount, (itemIndex) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.primaries[itemIndex % Colors.primaries.length],
+                    ),
+                  );
+                }),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}

@@ -27,7 +27,7 @@ class ShowMessage {
       builder: (context) => _AnimatedBox(
         message: message,
         boxColor: boxColor,
-        width: width ?? 300,
+        width: width ?? 500,
         height: height ?? MediaQuery.of(context).size.height * 0.1,
         displayDuration: displayDuration,
         onDismiss: () {
@@ -157,7 +157,7 @@ class _AnimatedBoxState extends State<_AnimatedBox>
                   textWidget(
                       text: displayText,
                       color: Colors.white,
-                      fontSize: Dimensions.thirteen),
+                      fontSize: Dimensions.twelve),
                   IconButton(
                     onPressed: () {
                       _changeTextToByeBye();
@@ -165,7 +165,7 @@ class _AnimatedBoxState extends State<_AnimatedBox>
                           const Duration(seconds: 1), widget.onDismiss);
                       _controller.reverse();
                     },
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: const Icon(Icons.close, color: Colors.white,size: 15,),
                   ),
                 ],
               ),

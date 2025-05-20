@@ -44,8 +44,8 @@ class _BigFireState extends State<BigFire> {
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
-        // 'assets/images/chicken_gif.gif',
-        _framePaths[_currentFrame],
+        'assets/images/big_fire.gif',
+        // _framePaths[_currentFrame],
         width: 150,
         height: 150,
         fit: BoxFit.fill,

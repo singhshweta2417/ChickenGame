@@ -5,6 +5,8 @@ import 'package:chicken_game/view/home_screen/home_screen.dart';
 import 'package:chicken_game/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../view/welcome_chicken_screen.dart';
+
 class Routers {
   static WidgetBuilder generateRoute(String routeName) {
     switch (routeName) {
@@ -16,6 +18,8 @@ class Routers {
         return (context) => const LoginScreen();
       case RoutesName.homeScreen:
         return (context) => const HomeScreen();
+      case RoutesName.welcomeChickenScreen:
+        return (context) => const WelcomeChickenScreen();
       default:
         return (context) => const Scaffold(
               body: Center(

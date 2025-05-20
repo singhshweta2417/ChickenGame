@@ -3,10 +3,12 @@ import 'package:chicken_game/res/color_constant.dart';
 import 'package:chicken_game/res/custom_text_field.dart';
 import 'package:chicken_game/res/primary_button.dart';
 import 'package:chicken_game/res/text_widget.dart';
-import 'package:chicken_game/utils/routes/routes_name.dart';
+import 'package:chicken_game/res/view_model/auth_view_model.dart';
+import 'package:chicken_game/utils/utils.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,34 +23,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passCont = TextEditingController();
   bool hidePassword = true;
   final FocusNode _focusNodePass = FocusNode();
+
   @override
   void dispose() {
     _focusNodePass.dispose();
     super.dispose();
   }
+
   String selectedCountryCode = "+91";
   bool isChecked = false;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
+    final register = Provider.of<AuthViewModel>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: ColorConstant.regBlackBg.withValues(alpha: 0.5),
       body: Center(
         child: Container(
           margin: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.02, vertical:screenHeight *0.05),
+              horizontal: screenWidth * 0.02, vertical: screenHeight * 0.05),
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
           decoration: BoxDecoration(
               color: ColorConstant.regBlackBg,
               borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
-              SizedBox(height:screenHeight *0.05),
+              SizedBox(height: screenHeight * 0.05),
               textWidget(
                   text: 'SIGN UP',
                   color: ColorConstant.white,
                   fontWeight: FontWeight.w900,
                   fontSize: Dimensions.twentyFour),
-              SizedBox(height:screenHeight *0.01),
+              SizedBox(height: screenHeight * 0.01),
               CustomTextField(
                   fillColor: ColorConstant.textFieldBg,
                   cursorColor: ColorConstant.white,
@@ -56,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: emailCont,
                   borderSide: const BorderSide(color: Colors.transparent),
                   labelColor: ColorConstant.white),
-              SizedBox(height:screenHeight *0.02),
+              SizedBox(height: screenHeight * 0.02),
               Row(
                 children: [
                   Flexible(
@@ -87,6 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Flexible(
                     flex: 4,
                     child: CustomTextField(
+                      maxLength: 10,
                       keyboardType: TextInputType.phone,
                       fillColor: ColorConstant.textFieldBg,
                       cursorColor: ColorConstant.white,
@@ -98,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              SizedBox(height:screenHeight *0.02),
+              SizedBox(height: screenHeight * 0.02),
               CustomTextField(
                   focusNode: _focusNodePass,
                   fillColor: ColorConstant.textFieldBg,
@@ -120,15 +128,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             : Icons.visibility_outlined,
                         color: ColorConstant.white,
                       ))),
-             Spacer(),
+              Spacer(),
               PrimaryButton(
                 onTap: () {
-                  Navigator.pushNamed(context, RoutesName.login);
+                  if (!isChecked) {
+                    print("Please agree to the terms and conditions.");
+                    ShowMessage.show(context,
+                        message: 'Please agree to the Terms an conditions',
+                        boxColor: Colors.orange);
+                    return;
+                  }
+                  if (mobileCont.text.isNotEmpty ||
+                      mobileCont.text.length == 10 &&
+                          passCont.text.isNotEmpty) {
+                    register.registerApi(
+                        emailCont.text.toString(),
+                        mobileCont.text.toString(),
+                        passCont.text.toString(),
+                        context);
+                  } else {
+                    ShowMessage.show(context,
+                        message:
+                            'Please Fill the Fields and mobile digit should be 10',
+                        boxColor: Colors.red);
+                  }
                 },
                 label: 'SIGN UP',
                 borderRadius: BorderRadius.circular(50),
               ),
-              SizedBox(height:screenHeight *0.05),
+              SizedBox(height: screenHeight * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                     child: Container(
                         alignment: Alignment.center,
-                        height:screenHeight *0.025,
+                        height: screenHeight * 0.025,
                         width: screenWidth * 0.05,
                         decoration: BoxDecoration(
                             color: isChecked
@@ -151,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: isChecked
                             ? textWidget(
                                 text: '✔️',
-                                fontSize: Dimensions.fourteen,
+                                fontSize: Dimensions.twelve,
                                 color: Colors.white)
                             : null),
                   ),
@@ -181,7 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ]))
                 ],
               ),
-              SizedBox(height:screenHeight *0.02),
+              SizedBox(height: screenHeight * 0.02),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(children: [
@@ -200,7 +228,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           .merge(GoogleFonts.sourceSerif4()),
                     ),
                   ])),
-              SizedBox(height:screenHeight *0.02),
+              SizedBox(height: screenHeight * 0.02),
             ],
           ),
         ),

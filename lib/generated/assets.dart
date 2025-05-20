@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String assetsImagesSmallFire = 'assets/images/small_fire.gif';
   static const String backgroundBackgroundDoor = 'assets/images/background/background_door.png';
   static const String backgroundBackgroundImage = 'assets/images/background/background_image.png';
   static const String backgroundBackgroundPlain = 'assets/images/background/background_plain.png';
@@ -43,6 +44,7 @@ class Assets {
   static const String chickensShiveringChicken = 'assets/images/chickens/shivering_chicken.gif';
   static const String iconsIndianIcon = 'assets/icons/indian_icon.png';
   static const String imagesBaseFireImage = 'assets/images/base_fire_image.png';
+  static const String imagesBigFire = 'assets/images/big_fire.gif';
   static const String imagesBigFire1 = 'assets/images/big_fire1.png';
   static const String imagesBigFire2 = 'assets/images/big_fire2.png';
   static const String imagesBigFire3 = 'assets/images/big_fire3.png';
@@ -53,6 +55,7 @@ class Assets {
   static const String imagesBigFire8 = 'assets/images/big_fire8.png';
   static const String imagesChickenGif = 'assets/images/chicken_gif.gif';
   static const String imagesChickenLogo = 'assets/images/chicken_logo.png';
+  static const String imagesDialogeBoxCont = 'assets/images/dialoge_box_cont.png';
   static const String imagesFire1 = 'assets/images/fire1.png';
   static const String imagesFire10 = 'assets/images/fire10.png';
   static const String imagesFire100 = 'assets/images/fire100.png';
@@ -159,6 +162,9 @@ class Assets {
   static const String imagesGoldenEggWall = 'assets/images/golden_egg_wall.png';
   static const String imagesGreenCoin = 'assets/images/green_coin.png';
   static const String imagesGreyCoin = 'assets/images/grey_coin.png';
+  static const String imagesPartyPomper = 'assets/images/party_pomper.gif';
+  static const String imagesSmallFire = 'assets/images/small_fire.gif';
   static const String imagesWinChicken = 'assets/images/win_chicken.gif';
+  static const String musicBgMusic = 'assets/music/bg_music.mp3';
 
 }

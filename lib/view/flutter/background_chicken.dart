@@ -1,6 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:chicken_game/res/view_model/bet_view_model.dart';
+import 'package:chicken_game/res/view_model/cash_view_model.dart';
+import 'package:chicken_game/res/view_model/multiplier_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:chicken_game/main.dart';
+import 'package:provider/provider.dart';
 import '../../generated/assets.dart';
 import '../../res/color_constant.dart';
 import '../../res/primary_button.dart';
@@ -21,10 +26,22 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   late ChickenController _controller;
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  Future<void> playBackgroundMusic() async {
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the music
+    await _audioPlayer.play(AssetSource('music/bg_music.mp3'));
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      playBackgroundMusic();
+      final multiplier =
+          Provider.of<MultiplierViewModel>(context, listen: false);
+      multiplier.multiplierApi('1', context);
+    });
+
     _controller = ChickenController();
     _controller.addListener(_onControllerUpdate);
 
@@ -49,6 +66,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   @override
   void dispose() {
+    _audioPlayer.dispose();
     _bounceController.dispose();
     _controller.removeListener(_onControllerUpdate);
     _controller.dispose();
@@ -92,6 +110,12 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildScrollingBackground() {
+    final multiplier =
+        Provider.of<MultiplierViewModel>(context).multiplierModel;
+    if (multiplier.data == null) {
+      return SizedBox(); // or some placeholder widget
+    }
+
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 1000),
       left: _controller.backgroundOffset,
@@ -100,7 +124,10 @@ class _BackgroundChickenState extends State<BackgroundChicken>
           _buildBlueDoor(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(5, _buildRedContainer),
+            children: multiplier.data != null
+                ? List.generate(
+                    multiplier.data!.data!.length, _buildRedContainer)
+                : [], // empty list if data is null
           ),
         ],
       ),
@@ -122,40 +149,71 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   Widget _buildRedContainer(int index) {
     final isFlipped = _controller.flippedRedIndices.contains(index);
-    final isLast = index == 4;
-    return Container(
-      height: screenHeight * 0.5,
-      width: isLast ? screenWidth * 0.55 : screenWidth * 0.4,
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-              isLast ? Assets.imagesGoldenEggWall : Assets.imagesFrontJali),
-          fit: isLast ? BoxFit.fill : BoxFit.contain,
-        ),
-      ),
-      alignment: Alignment.center,
-      child: isLast ? null : _buildCoinFlipCard(index, isFlipped),
-    );
+    final multiplierModel =
+        Provider.of<MultiplierViewModel>(context).multiplierModel;
+    final multiplierData = multiplierModel.data?.data;
+
+    // Safely get the multiplier length or default to 0
+    final multiplierLength = multiplierData?.length ?? 0;
+
+    // Determine if this is the last index
+    final isLast = index == multiplierLength - 1;
+    return isLast
+        ? Container(
+            height: screenHeight * 0.5,
+            width: screenWidth * 0.5,
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(Assets.imagesGoldenEggWall),
+                fit: BoxFit.fill,
+              ),
+            ),
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: screenHeight * 0.07, right: screenWidth * 0.09),
+              child: textWidget(
+                  textAlign: TextAlign.center,
+                  text: '${multiplierData?.last.multiplier.toString()} x',
+                  fontSize: Dimensions.twenty,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700),
+            ),
+          )
+        : _buildCoinFlipCard(index, isFlipped);
   }
 
   Widget _buildCoinFlipCard(int index, bool isFlipped) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(height: screenHeight * 0.08),
-        FlipCard(
-          flipOnTouch: false,
-          direction: FlipDirection.HORIZONTAL,
-          front: _buildCoinFace(index,
-              isFlipped ? Assets.imagesGreenCoin : Assets.imagesGreyCoin),
-          back: _buildCoinFace(index, Assets.imagesGreenCoin),
+    return Container(
+      height: screenHeight * 0.5,
+      width: screenWidth * 0.4,
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Assets.imagesFrontJali),
+          fit: BoxFit.contain,
         ),
-      ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: screenHeight * 0.08),
+          FlipCard(
+            flipOnTouch: false,
+            direction: FlipDirection.HORIZONTAL,
+            front: _buildCoinFace(index,
+                isFlipped ? Assets.imagesGreenCoin : Assets.imagesGreyCoin),
+            back: _buildCoinFace(index, Assets.imagesGreenCoin),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildCoinFace(int index, String asset) {
+    final multiplier =
+        Provider.of<MultiplierViewModel>(context).multiplierModel.data!;
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 300),
@@ -165,7 +223,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
       decoration:
           BoxDecoration(image: DecorationImage(image: AssetImage(asset))),
       child: textWidget(
-        text: '${index + 1}',
+        text: '${multiplier.data?[index].multiplier.toString()} x',
         fontSize: 25,
         color: Colors.white,
         fontWeight: FontWeight.w700,
@@ -192,12 +250,20 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildFireEffects() {
+    final multiplier =
+        Provider.of<MultiplierViewModel>(context).multiplierModel;
+
+    if (multiplier.data == null) {
+      return SizedBox(); // or some placeholder widget
+    }
+
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 1000),
       left: _controller.backgroundOffset + screenWidth * 0.37,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(4, _buildFireForIndex),
+        children:
+            List.generate(multiplier.data!.data!.length, _buildFireForIndex),
       ),
     );
   }
@@ -205,22 +271,31 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   Widget _buildFireForIndex(int index) {
     final hasFire = _controller.fireIndices.contains(index);
     final isCurrent = _controller.currentChickenIndex == index;
+    final multiplierModel =
+        Provider.of<MultiplierViewModel>(context).multiplierModel;
+    final multiplierData = multiplierModel.data?.data;
+    final multiplierLength = multiplierData?.length ?? 0;
+
+    // Determine if this is the last index
+    final isLast = index == multiplierLength - 1;
     return Container(
       height: screenHeight * 0.5,
       padding: EdgeInsets.only(left: screenWidth * 0.09),
       alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Spacer(),
-          if (_controller.showBigFire && isCurrent)
-            _buildBigFireEffect()
-          else if (hasFire)
-            _buildSmallFireEffect(),
-          _buildFireBase(),
-        ],
-      ),
+      child: isLast
+          ? Container()
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(),
+                if (_controller.showBigFire && isCurrent)
+                  _buildBigFireEffect()
+                else if (hasFire)
+                  _buildSmallFireEffect(),
+                _buildFireBase(),
+              ],
+            ),
     );
   }
 
@@ -303,29 +378,51 @@ class _BackgroundChickenState extends State<BackgroundChicken>
     );
   }
 
+  void _onMaxTap() {
+    setState(() {
+      int currentAmount = int.tryParse(_controller.selectedCoin ?? '') ?? 0;
+      currentAmount += 1;
+      _controller.selectedCoin = currentAmount.toString();
+    });
+  }
+
+  void _onMinTap() {
+    // Navigator.push(context, MaterialPageRoute(builder: (context)=>DynamicPyramid()));
+    setState(() {
+      int currentAmount = int.tryParse(_controller.selectedCoin ?? '') ?? 0;
+      if (currentAmount > 0) {
+        currentAmount -= 1;
+        _controller.selectedCoin = currentAmount.toString();
+      }
+    });
+  }
+
   Widget _buildMinButton() {
-    return _buildControlButton('MIN');
+    return _buildControlButton('MIN', _onMinTap);
   }
 
   Widget _buildMaxButton() {
-    return _buildControlButton('MAX');
+    return _buildControlButton('MAX', _onMaxTap);
   }
 
-  Widget _buildControlButton(String text) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-      height: screenHeight * 0.04,
-      width: screenWidth * 0.15,
-      decoration: BoxDecoration(
-        color: ColorConstant.grey,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: textWidget(
-        text: text,
-        color: ColorConstant.white,
-        fontWeight: FontWeight.bold,
-        fontSize: Dimensions.ten,
+  Widget _buildControlButton(String text, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+        height: screenHeight * 0.04,
+        width: screenWidth * 0.15,
+        decoration: BoxDecoration(
+          color: ColorConstant.grey,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: textWidget(
+          text: '$text ₹',
+          color: ColorConstant.white,
+          fontWeight: FontWeight.bold,
+          fontSize: Dimensions.ten,
+        ),
       ),
     );
   }
@@ -350,7 +447,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   Widget _buildCoinButton(int index) {
     final isSelected = _controller.selectedCoin == _controller.coinList[index];
-
     return GestureDetector(
       onTap: () => _selectCoin(index),
       child: Container(
@@ -395,8 +491,10 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildDifficultySelector() {
+    final bet = Provider.of<BetViewModel>(context);
+    final cashOut = Provider.of<CashOutViewModel>(context);
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
       decoration: BoxDecoration(
         color: ColorConstant.headerBg,
         borderRadius: BorderRadius.circular(5),
@@ -410,11 +508,24 @@ class _BackgroundChickenState extends State<BackgroundChicken>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          textWidget(
-            text: 'Easy',
-            fontSize: Dimensions.fifteen,
-            fontWeight: FontWeight.w700,
-            color: ColorConstant.white,
+          PrimaryButton(
+            onTap: () {
+              bet.betApi(_controller.selectedCoin.toString(), context);
+            },
+            color: ColorConstant.green,
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.2,
+            label: 'Bet',
+          ),
+          PrimaryButton(
+            onTap: () {
+              cashOut.cashOutApi(_controller.currentChickenIndex + 1, context);
+              print('${_controller.currentChickenIndex + 1} yaha');
+            },
+            color: ColorConstant.blueColor,
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.25,
+            label: 'Cash Out',
           ),
           _buildDifficultyDropdown(),
         ],
@@ -425,10 +536,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   Widget _buildDifficultyDropdown() {
     return PopupMenuButton<String>(
       color: ColorConstant.grey,
-      icon: Icon(
-        Icons.keyboard_arrow_down,
-        color: ColorConstant.white,
-      ),
       onSelected: (value) {
         setState(() {
           _controller.dropdownValue = value;
@@ -447,11 +554,35 @@ class _BackgroundChickenState extends State<BackgroundChicken>
           );
         }).toList();
       },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: ColorConstant.grey,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            textWidget(
+              text: _controller.dropdownValue ?? "Select",
+              color: ColorConstant.white,
+              fontWeight: FontWeight.bold,
+              fontSize: Dimensions.fifteen,
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.keyboard_arrow_down,
+              color: ColorConstant.white,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildGoButton() {
-    bool isDisabled = _controller.selectedCoin == null || _controller.isScrolling;
+    bool isDisabled =
+        _controller.selectedCoin == null || _controller.isScrolling;
     return PrimaryButton(
       onTap: !isDisabled ? _onButtonPressed : null,
       color: !isDisabled ? ColorConstant.green : ColorConstant.grey,

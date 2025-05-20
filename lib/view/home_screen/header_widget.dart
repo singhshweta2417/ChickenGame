@@ -3,6 +3,7 @@ import 'package:chicken_game/main.dart';
 import 'package:chicken_game/res/color_constant.dart';
 import 'package:chicken_game/res/text_widget.dart';
 import 'package:flutter/material.dart';
+import '../flutter/slider.dart';
 
 class HeaderWidget extends StatefulWidget {
   const HeaderWidget({super.key});
@@ -44,8 +45,24 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ],
             ),
           ),
+          // Builder(
+          //   builder: (context) => IconButton(
+          //     onPressed: () {
+          //       Scaffold.of(context).openDrawer();
+          //       print('bskjfd');
+          //     },
+          //     icon: Icon(
+          //       Icons.menu,
+          //       color: ColorConstant.white,
+          //     ),
+          //   ),
+          // ),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+                showDialog(
+                    context: context, builder: (context) => SliderScreen());
+              },
               icon: Icon(
                 Icons.menu,
                 color: ColorConstant.white,

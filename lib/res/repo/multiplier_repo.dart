@@ -1,0 +1,22 @@
+import 'package:flutter/foundation.dart';
+import '../../helper/network/base_api_services.dart';
+import '../../helper/network/network_api_services.dart';
+import '../api_url.dart';
+import '../model/multiplier_model.dart';
+
+class MultiplierRepository {
+  final BaseApiServices _apiServices = NetworkApiServices();
+
+  Future<MultiplierModel> multiplierApi(dynamic data) async {
+    try {
+      dynamic response =
+          await _apiServices.getGetApiResponse(ApiUrl.multiplierUrl + data);
+      return MultiplierModel.fromJson(response);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error occurred during multiplierApi: $e');
+      }
+      rethrow;
+    }
+  }
+}

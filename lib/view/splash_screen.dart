@@ -1,7 +1,7 @@
 import 'package:chicken_game/generated/assets.dart';
 import 'package:chicken_game/main.dart';
-import 'package:chicken_game/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import '../res/splash_services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,15 +11,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // SplashServices splashServices = SplashServices();
+  SplashServices splashServices = SplashServices();
 
   @override
   void initState() {
     super.initState();
-    // splashServices.checkAuthentication(context);
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, RoutesName.signUp);
-    });
+    splashServices.checkAuthentication(context);
   }
 
   @override

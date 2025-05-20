@@ -4,9 +4,11 @@ import 'package:chicken_game/res/color_constant.dart';
 import 'package:chicken_game/res/custom_text_field.dart';
 import 'package:chicken_game/res/primary_button.dart';
 import 'package:chicken_game/res/text_widget.dart';
-import 'package:chicken_game/utils/routes/routes_name.dart';
+import 'package:chicken_game/res/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,18 +18,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   bool _hidePassword = true;
   bool _isEmailSelected = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
   }
@@ -35,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset:false,
       backgroundColor: Colors.black.withValues(alpha: 0.5),
       body: Center(
         child: Container(
@@ -137,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildEmailField() {
     return CustomTextField(
-        controller: _emailController,
+        controller: emailController,
         fillColor: ColorConstant.textFieldBg,
         cursorColor: ColorConstant.white,
         labelText: 'Email',
@@ -147,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildPhoneField() {
     return CustomTextField(
-        controller: _phoneController,
+        controller: phoneController,
         keyboardType: TextInputType.phone,
         fillColor: ColorConstant.textFieldBg,
         cursorColor: ColorConstant.white,
@@ -181,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildPasswordField() {
     return CustomTextField(
-        controller: _passwordController,
+        controller: passwordController,
         focusNode: _passwordFocusNode,
         obscureText: _hidePassword,
         suffixIcon: IconButton(
@@ -245,10 +248,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSignInButton() {
+    final login = Provider.of<AuthViewModel>(context);
     return PrimaryButton(
       label: 'SIGN IN',
       onTap: () {
-        Navigator.pushNamed(context, RoutesName.homeScreen);
+        if (phoneController.text.isNotEmpty ||
+            phoneController.text.length == 10 &&
+                passwordController.text.isNotEmpty) {
+          login.loginApi(
+              emailController.text.toString(),
+              phoneController.text.toString(),
+              passwordController.text.toString(),
+              context);
+        } else {
+          ShowMessage.show(context,
+              message: 'Please Fill the Fields and mobile digit should be 10',
+              boxColor: Colors.red);
+        }
+        // Navigator.pushNamed(context, RoutesName.homeScreen);
       },
       borderRadius: BorderRadius.circular(20),
     );
