@@ -336,7 +336,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
           vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
       margin: EdgeInsets.symmetric(
           vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
-      height: screenHeight * 0.3,
+      // height: screenHeight * 0.3,
       decoration: BoxDecoration(
         color: ColorConstant.footerBg,
         borderRadius: BorderRadius.circular(10),
@@ -493,7 +493,9 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   Widget _buildDifficultySelector() {
     final bet = Provider.of<BetViewModel>(context);
     final cashOut = Provider.of<CashOutViewModel>(context);
-
+    int index = _controller.currentChickenIndex + 1;
+    int? coin = int.tryParse(_controller.selectedCoin ?? '0');
+    int? totalAmount = index * coin!.toInt();
     return Container(
       decoration: BoxDecoration(
         color: ColorConstant.headerBg,
@@ -509,23 +511,42 @@ class _BackgroundChickenState extends State<BackgroundChicken>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           PrimaryButton(
-            onTap: () {
-              bet.betApi(_controller.selectedCoin.toString(), context);
-            },
-            color: ColorConstant.green,
+            onTap: (_controller.selectedCoin != null &&
+                    !_controller.hasUserPlacedBet)
+                ? () {
+                    _controller.placeBet();
+                    bet.betApi(_controller.selectedCoin.toString(), context);
+                  }
+                : null,
+            color: (_controller.selectedCoin != null &&
+                    !_controller.hasUserPlacedBet)
+                ? ColorConstant.green
+                : ColorConstant.grey,
             height: screenHeight * 0.05,
             width: screenWidth * 0.2,
             label: 'Bet',
           ),
           PrimaryButton(
             onTap: () {
-              cashOut.cashOutApi(_controller.currentChickenIndex + 1, context);
-              print('${_controller.currentChickenIndex + 1} yaha');
+              if (index != 0) {
+                cashOut.cashOutApi(index, context);
+              }
             },
-            color: ColorConstant.blueColor,
-            height: screenHeight * 0.05,
+            color: index != 0 ? ColorConstant.blueColor : ColorConstant.grey,
             width: screenWidth * 0.25,
-            label: 'Cash Out',
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                textWidget(
+                    text: 'Cash Out',
+                    fontSize: Dimensions.fifteen,
+                    color: Colors.white),
+                textWidget(
+                    text: '${totalAmount.toString()} x',
+                    fontSize: Dimensions.fifteen,
+                    color: Colors.white),
+              ],
+            ),
           ),
           _buildDifficultyDropdown(),
         ],
@@ -581,8 +602,9 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildGoButton() {
-    bool isDisabled =
-        _controller.selectedCoin == null || _controller.isScrolling;
+    bool isDisabled = !_controller.hasUserPlacedBet ||
+        _controller.selectedCoin == null ||
+        _controller.isScrolling;
     return PrimaryButton(
       onTap: !isDisabled ? _onButtonPressed : null,
       color: !isDisabled ? ColorConstant.green : ColorConstant.grey,

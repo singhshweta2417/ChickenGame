@@ -14,6 +14,7 @@ Widget textWidget({
   int threshold = 150,
   Function()? onToggle,
 }) {
+
   // Determine if the text needs truncation
   bool isLongText = text.length > threshold;
 
@@ -51,6 +52,7 @@ Widget textWidget({
         ),
     ],
   );
+
 }
 
 class Dimensions {

@@ -1,9 +1,10 @@
-import 'dart:ui';
-
+import 'package:chicken_game/res/view_model/user_view_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../utils/utils.dart';
 import '../repo/bet_repo.dart';
+import 'auth_view_model.dart';
 
 class BetViewModel with ChangeNotifier {
   final _betRepo = BetRepository();
@@ -17,13 +18,18 @@ class BetViewModel with ChangeNotifier {
   }
 
   Future<void> betApi(dynamic amount, context) async {
-    Map data = {"user_id": 1, "game_id": 5, "amount": amount};
-    print('$data: amount aa ra');
+    UserViewModel userViewModel = UserViewModel();
+    String? userId = await userViewModel.getUser();
+    Map data = {"user_id": userId.toString(), "game_id": 5, "amount": amount};
     _betRepo.betApi(data).then((value) {
       if (value["success"] == true) {
-        ShowMessage.show(context, message: value["message"].toString(),boxColor: Colors.green);
+        final chicken =Provider.of<AuthViewModel>(context,listen: false);
+        chicken.profileApi(context);
+        ShowMessage.show(context,
+            message: value["message"].toString(), boxColor: Colors.green);
       } else {
-        ShowMessage.show(context, message: value["message"].toString(),boxColor: Colors.red);
+        ShowMessage.show(context,
+            message: value["message"].toString(), boxColor: Colors.red);
         if (kDebugMode) {
           print('value');
         }

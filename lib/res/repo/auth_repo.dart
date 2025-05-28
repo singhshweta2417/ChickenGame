@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../helper/network/base_api_services.dart';
 import '../../helper/network/network_api_services.dart';
 import '../api_url.dart';
+import '../model/auth_model.dart';
 
 class AuthRepository {
   final BaseApiServices _apiServices = NetworkApiServices();
@@ -21,11 +22,11 @@ class AuthRepository {
   }
 
   ///Login
-  Future<dynamic> loginApi(dynamic data) async {
+  Future<AuthModel> loginApi(dynamic data) async {
     try {
       dynamic response =
           await _apiServices.getPostApiResponse(ApiUrl.loginUrl, data);
-      return response;
+      return AuthModel.fromJson(response);
     } catch (e) {
       if (kDebugMode) {
         print('Error occurred during loginApi: $e');

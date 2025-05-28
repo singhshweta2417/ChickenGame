@@ -37,7 +37,7 @@ class _SliderScreenState extends State<SliderScreen> {
     final betHistory = Provider.of<BetHistoryViewModel>(context);
     return Dialog(
       child: Container(
-        height: screenHeight * 0.5,
+        height: screenHeight * 0.6,
         width: screenWidth,
         decoration: BoxDecoration(
             image: DecorationImage(

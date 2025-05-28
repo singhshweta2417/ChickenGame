@@ -17,7 +17,7 @@ Future<bool?> showBackDialog({
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
           height: screenHeight * 0.2,
           decoration: BoxDecoration(
-            color: Colors.grey,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(25),
           ),
           child: Column(
@@ -31,12 +31,12 @@ Future<bool?> showBackDialog({
                     height: screenHeight * 0.05,
                     onTap: yes,
                     width: screenWidth * 0.25,
-                    child: textWidget(text: 'yes'),
+                    child: textWidget(text: 'yes',color: Colors.white),
                   ),
                   PrimaryButton(
                     height: screenHeight * 0.05,
                     width: screenWidth * 0.25,
-                    child: textWidget(text: 'No'),
+                    child: textWidget(text: 'No',color: Colors.white),
                     onTap: () {
                       HapticFeedback.vibrate();
                       Navigator.pop(context);

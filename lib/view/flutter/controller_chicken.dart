@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:chicken_game/res/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../generated/assets.dart';
 import '../../main.dart';
 import '../../res/color_constant.dart';
@@ -26,12 +28,12 @@ class ChickenController extends ChangeNotifier {
   bool _showBigFire = false;
   bool _showSmallFire = false;
   int? _currentFireIndex;
-
+  bool hasUserPlacedBet = false;
   // Game settings
   List<String> coinList = ['50', '100', '250', '500'];
   List<String> levelList = ['Easy', 'Medium', 'Hard'];
   String? selectedCoin;
-  String? dropdownValue;
+  String? dropdownValue = 'Easy';
 
   // Timer
   late Timer _fireTimer;
@@ -50,7 +52,14 @@ class ChickenController extends ChangeNotifier {
     _startFireTimer();
     _generateFireIndices();
   }
-
+  void placeBet() {
+    hasUserPlacedBet = true;
+    notifyListeners();
+  }
+  void resetBet() {
+    hasUserPlacedBet = false;
+    notifyListeners();
+  }
   void _startFireTimer() {
     _fireTimer = Timer.periodic(fireUpdateInterval, (_) {
       _generateFireIndices();
@@ -95,7 +104,7 @@ class ChickenController extends ChangeNotifier {
 
       Future.delayed(redDelay, () {
         _isScrolling = false;
-
+        Provider.of<AuthViewModel>(context,listen: false).profileApi(context);
         // Check if we reached the last index
         if (_currentChickenIndex == maxChickenIndex) {
           _showWinDialog(context);
@@ -107,8 +116,9 @@ class ChickenController extends ChangeNotifier {
   }
 
   void _checkForFire(BuildContext context, int index) {
-    if (_showSmallFire || _showBigFire)
+    if (_showSmallFire || _showBigFire) {
       return; // Agar fire already chal rahi hai to skip karo
+    }
 
     if (fireIndices.contains(index)) {
       _triggerFireAnimation(context, index);
@@ -260,6 +270,8 @@ class ChickenController extends ChangeNotifier {
   bool get showSmallFire => _showSmallFire;
   int? get currentFireIndex => _currentFireIndex;
 }
+
+
 
 ///
 //  void _restartGame() {

@@ -8,6 +8,7 @@ import 'package:chicken_game/res/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../utils/routes/routes_name.dart';
 import '../../utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset:false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black.withValues(alpha: 0.5),
       body: Center(
         child: Container(
@@ -61,7 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: screenHeight * 0.02),
               _buildPasswordRecoveryText(),
               Spacer(),
-              _buildSignUpText(),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, RoutesName.signUp);
+                  },
+                  child: _buildSignUpText()),
               SizedBox(height: screenHeight * 0.02),
               _buildSignInButton(),
             ],
@@ -140,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildEmailField() {
     return CustomTextField(
+        keyboardType: TextInputType.emailAddress,
         controller: emailController,
         fillColor: ColorConstant.textFieldBg,
         cursorColor: ColorConstant.white,
@@ -150,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildPhoneField() {
     return CustomTextField(
+        maxLength: 10,
         controller: phoneController,
         keyboardType: TextInputType.phone,
         fillColor: ColorConstant.textFieldBg,

@@ -9,8 +9,6 @@ import 'package:chicken_game/res/view_model/user_view_model.dart';
 import 'package:chicken_game/utils/routes/routes.dart';
 import 'package:chicken_game/utils/routes/routes_name.dart';
 import 'package:chicken_game/view/flutter/controller_chicken.dart';
-import 'package:chicken_game/view/welcome_chicken_screen.dart'
-    show WelcomeChickenScreen;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

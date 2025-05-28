@@ -132,7 +132,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               PrimaryButton(
                 onTap: () {
                   if (!isChecked) {
-                    print("Please agree to the terms and conditions.");
                     ShowMessage.show(context,
                         message: 'Please agree to the Terms an conditions',
                         boxColor: Colors.orange);

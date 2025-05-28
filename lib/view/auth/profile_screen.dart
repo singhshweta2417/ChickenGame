@@ -46,10 +46,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chicken = Provider.of<AuthViewModel>(context, listen: false);
+      chicken.profileApi(context);
+      if (chicken.userDetailsResponse?.profile != null) {
+        nameController.text =
+            chicken.userDetailsResponse?.profile?.name.toString() ?? '';
+        emailController.text =
+            chicken.userDetailsResponse?.profile?.email.toString() ?? '';
+        phoneController.text =
+            chicken.userDetailsResponse?.profile?.mobile.toString() ?? '';
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         title: textWidget(text: 'Profile Screen'),
       ),
       resizeToAvoidBottomInset: false,
@@ -83,6 +102,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildLoginTitle() {
+    final viewProfile = Provider.of<AuthViewModel>(context);
+    final profileImageUrl =
+        viewProfile.userDetailsResponse?.profile?.profileImage;
+
+    ImageProvider imageProvider;
+
+    if (_image != null) {
+      imageProvider = FileImage(_image!);
+    } else if (profileImageUrl != null && profileImageUrl.isNotEmpty) {
+      imageProvider = NetworkImage(profileImageUrl);
+    } else {
+      imageProvider = AssetImage(Assets.chickensChickenRoast);
+    }
+
     return GestureDetector(
       onTap: () => _getImage(ImageSource.gallery),
       child: CircleAvatar(
@@ -90,9 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.blue,
         child: CircleAvatar(
           radius: 48,
-          backgroundImage: _image != null
-              ? FileImage(_image!)
-              : AssetImage(Assets.chickensChickenRoast) as ImageProvider,
+          backgroundImage: imageProvider,
         ),
       ),
     );
@@ -164,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               nameController.text.toString(),
               emailController.text.toString(),
               phoneController.text.toString(),
-              _image.toString(),
+              base64Image.toString(),
               context);
         } else {
           ShowMessage.show(context,
