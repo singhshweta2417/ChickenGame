@@ -7,13 +7,11 @@ import '../../generated/assets.dart';
 import '../../main.dart';
 import '../../res/color_constant.dart';
 import '../../res/text_widget.dart';
+import '../../res/view_model/win_loss_view_model.dart';
 import '../welcome_chicken_screen.dart';
 
 class ChickenController extends ChangeNotifier {
   // Game layout properties
-  double redContainerWidth = 100;
-  double blueContainerWidth = 150;
-  final double _blackPosition = screenWidth * 0.15;
   double _backgroundOffset = 0.0;
 
   // Game state properties
@@ -29,6 +27,8 @@ class ChickenController extends ChangeNotifier {
   bool _showSmallFire = false;
   int? _currentFireIndex;
   bool hasUserPlacedBet = false;
+  bool _isGameOver = false;
+
   // Game settings
   List<String> coinList = ['50', '100', '250', '500'];
   List<String> levelList = ['Easy', 'Medium', 'Hard'];
@@ -46,22 +46,26 @@ class ChickenController extends ChangeNotifier {
   static const Duration scrollDirection = Duration(milliseconds: 1500);
   static const Duration redDelay = Duration(milliseconds: 2000);
   static const Duration smallFireDirection = Duration(milliseconds: 800);
-  static const Duration bigFireDuration = Duration(milliseconds: 500);
+  static const Duration bigFireDuration = Duration(milliseconds: 300);
 
   void chickenControllerStart() {
     _startFireTimer();
     _generateFireIndices();
   }
+
   void placeBet() {
     hasUserPlacedBet = true;
     notifyListeners();
   }
+
   void resetBet() {
     hasUserPlacedBet = false;
     notifyListeners();
   }
+
   void _startFireTimer() {
     _fireTimer = Timer.periodic(fireUpdateInterval, (_) {
+      print('yaha update ho ra h fire lagatar');
       _generateFireIndices();
       notifyListeners();
     });
@@ -104,7 +108,7 @@ class ChickenController extends ChangeNotifier {
 
       Future.delayed(redDelay, () {
         _isScrolling = false;
-        Provider.of<AuthViewModel>(context,listen: false).profileApi(context);
+        Provider.of<AuthViewModel>(context, listen: false).profileApi(context);
         // Check if we reached the last index
         if (_currentChickenIndex == maxChickenIndex) {
           _showWinDialog(context);
@@ -179,15 +183,19 @@ class ChickenController extends ChangeNotifier {
   void _triggerFireAnimation(BuildContext context, int index) {
     _currentFireIndex = index;
     _showSmallFire = true;
+    _isGameOver = false;
     notifyListeners();
 
-    // Longer delay for small fire visibility
     Future.delayed(const Duration(milliseconds: 500), () {
       _showSmallFire = false;
       _showBigFire = true;
       notifyListeners();
-
       Future.delayed(bigFireDuration, () {
+        Provider.of<WinLossViewModel>(context, listen: false)
+            .winLossApi(context);
+        // _showBigFire = false;
+        _isGameOver = false;
+        // notifyListeners();
         _showGameOverDialog(context);
       });
     });
@@ -261,8 +269,8 @@ class ChickenController extends ChangeNotifier {
   }
 
   // Getters
-  double get blackPosition => _blackPosition;
   double get backgroundOffset => _backgroundOffset;
+  bool get isGameOver => _isGameOver;
   bool get hasReachedRed => _hasReachedRed;
   bool get isScrolling => _isScrolling;
   int get currentChickenIndex => _currentChickenIndex;
@@ -270,8 +278,6 @@ class ChickenController extends ChangeNotifier {
   bool get showSmallFire => _showSmallFire;
   int? get currentFireIndex => _currentFireIndex;
 }
-
-
 
 ///
 //  void _restartGame() {

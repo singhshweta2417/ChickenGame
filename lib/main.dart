@@ -6,6 +6,7 @@ import 'package:chicken_game/res/view_model/cash_view_model.dart';
 import 'package:chicken_game/res/view_model/multiplier_view_model.dart';
 import 'package:chicken_game/res/view_model/today_result_view_model.dart';
 import 'package:chicken_game/res/view_model/user_view_model.dart';
+import 'package:chicken_game/res/view_model/win_loss_view_model.dart';
 import 'package:chicken_game/utils/routes/routes.dart';
 import 'package:chicken_game/utils/routes/routes_name.dart';
 import 'package:chicken_game/view/flutter/controller_chicken.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CashOutViewModel()),
         ChangeNotifierProvider(create: (context) => BetHistoryViewModel()),
         ChangeNotifierProvider(create: (context) => TodayResultViewModel()),
+        ChangeNotifierProvider(create: (context) => WinLossViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

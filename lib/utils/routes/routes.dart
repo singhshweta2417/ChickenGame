@@ -5,6 +5,8 @@ import 'package:chicken_game/view/home_screen/home_screen.dart';
 import 'package:chicken_game/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../view/auth/profile_screen.dart';
+import '../../view/flutter/chicken_home_screen.dart';
 import '../../view/welcome_chicken_screen.dart';
 
 class Routers {
@@ -20,6 +22,10 @@ class Routers {
         return (context) => const HomeScreen();
       case RoutesName.welcomeChickenScreen:
         return (context) => const WelcomeChickenScreen();
+      case RoutesName.profileScreen:
+        return (context) => const ProfileScreen();
+      case RoutesName.chickenHomeScreen:
+        return (context) => const ChickenHomeScreen();
       default:
         return (context) => const Scaffold(
               body: Center(

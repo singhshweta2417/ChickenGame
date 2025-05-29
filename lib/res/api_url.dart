@@ -7,6 +7,7 @@ class ApiUrl {
   static const String multiplierUrl = '${baseUrl}multiplier?type=';
   static const String betUrl = '${baseUrl}bet';
   static const String betHistoryUrl = '${baseUrl}bet_history';
+  static const String winLossUrl = '${baseUrl}win-loss';
   static const String cashOutUrl = '${baseUrl}cashout';
   static const String todayResultUrl = '${baseUrl}today_result';
 }

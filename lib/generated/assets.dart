@@ -55,6 +55,8 @@ class Assets {
   static const String imagesBigFire8 = 'assets/images/big_fire8.png';
   static const String imagesChickenGif = 'assets/images/chicken_gif.gif';
   static const String imagesChickenLogo = 'assets/images/chicken_logo.png';
+  static const String imagesCollissionFire = 'assets/images/collission_fire.gif';
+  static const String imagesConvertColission = 'assets/images/convert_colission.mp4';
   static const String imagesDialogeBoxCont = 'assets/images/dialoge_box_cont.png';
   static const String imagesFire1 = 'assets/images/fire1.png';
   static const String imagesFire10 = 'assets/images/fire10.png';
@@ -163,7 +165,9 @@ class Assets {
   static const String imagesGreenCoin = 'assets/images/green_coin.png';
   static const String imagesGreyCoin = 'assets/images/grey_coin.png';
   static const String imagesPartyPomper = 'assets/images/party_pomper.gif';
+  static const String imagesPlayButton = 'assets/images/play_button.png';
   static const String imagesSmallFire = 'assets/images/small_fire.gif';
+  static const String imagesWelcomeBg = 'assets/images/welcome_bg.png';
   static const String imagesWinChicken = 'assets/images/win_chicken.gif';
   static const String musicBgMusic = 'assets/music/bg_music.mp3';
 

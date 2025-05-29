@@ -20,6 +20,7 @@ class MultiplierViewModel with ChangeNotifier {
   Future<void> multiplierApi(dynamic data, context) async {
     _multiplierRepo.multiplierApi(data).then((value) {
       if (value.status == true) {
+        print('ho gya bnhiahd');
         setMultiplierModel(ApiResponse.completed(value));
       } else {
         setMultiplierModel(ApiResponse.completed(value));

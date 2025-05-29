@@ -1,11 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:chicken_game/res/view_model/bet_view_model.dart';
 import 'package:chicken_game/res/view_model/cash_view_model.dart';
 import 'package:chicken_game/res/view_model/multiplier_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:chicken_game/main.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 import '../../generated/assets.dart';
 import '../../res/color_constant.dart';
 import '../../res/primary_button.dart';
@@ -26,22 +25,29 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   late ChickenController _controller;
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  Future<void> playBackgroundMusic() async {
-    await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the music
-    await _audioPlayer.play(AssetSource('music/bg_music.mp3'));
-  }
+  late VideoPlayerController _videoController;
+  // final AudioPlayer _audioPlayer = AudioPlayer();
+  // Future<void> playBackgroundMusic() async {
+  //   await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the music
+  //   await _audioPlayer.play(AssetSource('music/bg_music.mp3'));
+  // }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      playBackgroundMusic();
+      // playBackgroundMusic();
       final multiplier =
           Provider.of<MultiplierViewModel>(context, listen: false);
       multiplier.multiplierApi('1', context);
     });
-
+    _videoController =
+        VideoPlayerController.asset("assets/images/convert_colission.mp4")
+          ..initialize().then((_) {
+            setState(() {});
+            _videoController.setLooping(true);
+            _videoController.play();
+          });
     _controller = ChickenController();
     _controller.addListener(_onControllerUpdate);
 
@@ -56,7 +62,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
         curve: Curves.easeInOut,
       ),
     );
-
+     print('yaha shuru ho ra h chicken');
     _controller.chickenControllerStart();
   }
 
@@ -66,7 +72,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    // _audioPlayer.dispose();
     _bounceController.dispose();
     _controller.removeListener(_onControllerUpdate);
     _controller.dispose();
@@ -136,8 +142,8 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   Widget _buildBlueDoor() {
     return Container(
-      width: _controller.blueContainerWidth,
-      height: MediaQuery.of(context).size.height,
+      width: screenWidth * 0.4,
+      height: screenHeight,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(Assets.backgroundBackgroundDoor),
@@ -188,26 +194,16 @@ class _BackgroundChickenState extends State<BackgroundChicken>
     return Container(
       height: screenHeight * 0.5,
       width: screenWidth * 0.4,
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+      padding: EdgeInsets.only(top: screenHeight * 0.12),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(Assets.imagesFrontJali),
           fit: BoxFit.contain,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: screenHeight * 0.08),
-          FlipCard(
-            flipOnTouch: false,
-            direction: FlipDirection.HORIZONTAL,
-            front: _buildCoinFace(index,
-                isFlipped ? Assets.imagesGreenCoin : Assets.imagesGreyCoin),
-            back: _buildCoinFace(index, Assets.imagesGreenCoin),
-          ),
-        ],
-      ),
+      alignment: Alignment.topCenter,
+      child: _buildCoinFace(
+          index, isFlipped ? Assets.imagesGreenCoin : Assets.imagesGreyCoin),
     );
   }
 
@@ -217,9 +213,8 @@ class _BackgroundChickenState extends State<BackgroundChicken>
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 300),
-      width: _controller.redContainerWidth,
+      width: screenWidth * 0.25,
       height: screenHeight * 0.15,
-      margin: const EdgeInsets.all(4),
       decoration:
           BoxDecoration(image: DecorationImage(image: AssetImage(asset))),
       child: textWidget(
@@ -232,34 +227,42 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildChickenCharacter() {
+    if (_controller.isGameOver) {
+      return const SizedBox.shrink(); // Chicken hidden when game is over
+    }
+
     return AnimatedPositioned(
-      duration: const Duration(seconds: 3),
-      left: _controller.blackPosition + 0.05,
-      top: screenHeight * 0.37 + _bounceAnimation.value,
+      duration: Duration(milliseconds: 1500),
+      left: screenWidth * 0.04,
+      top: screenHeight * 0.33 + _bounceAnimation.value,
       child: Container(
-        height: screenHeight * 0.15,
-        width: screenHeight * 0.13,
+        height: screenHeight * 0.2,
+        width: screenHeight * 0.17,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(_controller.isScrolling
-                    ? 'assets/images/chicken_gif.gif'
-                    : 'assets/images/chickens/shivering_chicken.gif'),
-                fit: _controller.isScrolling ? BoxFit.contain : BoxFit.cover)),
+          image: DecorationImage(
+            image: AssetImage(_controller.isScrolling
+                ? 'assets/images/chicken_gif.gif'
+                : 'assets/images/chickens/shivering_chicken.gif'),
+            fit: _controller.isScrolling ? BoxFit.contain : BoxFit.cover,
+          ),
+        ),
       ),
     );
+
   }
+
 
   Widget _buildFireEffects() {
     final multiplier =
         Provider.of<MultiplierViewModel>(context).multiplierModel;
 
     if (multiplier.data == null) {
-      return SizedBox(); // or some placeholder widget
+      return SizedBox();
     }
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 1000),
-      left: _controller.backgroundOffset + screenWidth * 0.37,
+      left: _controller.backgroundOffset + screenWidth * 0.38,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children:
@@ -278,9 +281,13 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
     // Determine if this is the last index
     final isLast = index == multiplierLength - 1;
+    print(multiplierLength);
+    print(isLast);
+    print('isLastdjbfkj');
     return Container(
       height: screenHeight * 0.5,
-      padding: EdgeInsets.only(left: screenWidth * 0.09),
+      padding: EdgeInsets.only(
+          left: index == 0 ? screenWidth * 0.05 : screenWidth * 0.1),
       alignment: Alignment.center,
       child: isLast
           ? Container()
@@ -301,10 +308,25 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
   Widget _buildBigFireEffect() {
     return Container(
-      margin: EdgeInsets.only(right: screenWidth * 0.025),
-      height: screenHeight * 0.15,
+      height: screenHeight * 0.4,
       width: screenWidth * 0.3,
-      child: const BigFire(),
+      alignment: Alignment.centerRight,
+      // decoration: BoxDecoration(
+      //     color: Colors.blue,
+      //     image: DecorationImage(image: AssetImage("assets/images/collission_fire.gif"),fit: BoxFit.cover)),
+      // child: const BigFire(),
+      child: _videoController.value.isInitialized
+          ? SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _videoController.value.size.width,
+                  height: _videoController.value.size.height,
+                  child: VideoPlayer(_videoController),
+                ),
+              ),
+            )
+          : SizedBox(),
     );
   }
 
@@ -387,7 +409,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   void _onMinTap() {
-    // Navigator.push(context, MaterialPageRoute(builder: (context)=>DynamicPyramid()));
     setState(() {
       int currentAmount = int.tryParse(_controller.selectedCoin ?? '') ?? 0;
       if (currentAmount > 0) {
@@ -555,11 +576,26 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildDifficultyDropdown() {
+    // Define the mapping
+    final difficultyMap = {
+      'Easy': '1',
+      'Medium': '2',
+      'Hard': '3',
+    };
+
     return PopupMenuButton<String>(
       color: ColorConstant.grey,
       onSelected: (value) {
         setState(() {
           _controller.dropdownValue = value;
+
+          final selectedApiValue = difficultyMap[value] ?? '1'; // default to '1' (Easy)
+
+          final multiplier =
+          Provider.of<MultiplierViewModel>(context, listen: false);
+          multiplier.multiplierApi(selectedApiValue, context); // Send mapped value to API
+
+          print('Selected difficulty: $value => API value: $selectedApiValue');
         });
       },
       itemBuilder: (context) {
@@ -601,6 +637,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
     );
   }
 
+
   Widget _buildGoButton() {
     bool isDisabled = !_controller.hasUserPlacedBet ||
         _controller.selectedCoin == null ||
@@ -614,4 +651,5 @@ class _BackgroundChickenState extends State<BackgroundChicken>
           : 'Please Select Amount',
     );
   }
+
 }
