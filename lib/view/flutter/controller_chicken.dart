@@ -7,6 +7,7 @@ import '../../generated/assets.dart';
 import '../../main.dart';
 import '../../res/color_constant.dart';
 import '../../res/text_widget.dart';
+import '../../res/view_model/multiplier_view_model.dart';
 import '../../res/view_model/win_loss_view_model.dart';
 import '../welcome_chicken_screen.dart';
 
@@ -40,8 +41,6 @@ class ChickenController extends ChangeNotifier {
   Random random = Random();
 
   // Constants
-  static const int maxFires = 4;
-  static const int maxChickenIndex = 4;
   static const Duration fireUpdateInterval = Duration(milliseconds: 500);
   static const Duration scrollDirection = Duration(milliseconds: 1500);
   static const Duration redDelay = Duration(milliseconds: 2000);
@@ -65,7 +64,7 @@ class ChickenController extends ChangeNotifier {
 
   void _startFireTimer() {
     _fireTimer = Timer.periodic(fireUpdateInterval, (_) {
-      print('yaha update ho ra h fire lagatar');
+      print('fire updated continuously');
       _generateFireIndices();
       notifyListeners();
     });
@@ -91,17 +90,27 @@ class ChickenController extends ChangeNotifier {
     }
     _continueGame(context);
   }
-
   void _continueGame(BuildContext context) {
-    if (_currentChickenIndex < maxChickenIndex) {
+    final multiplierModel = Provider.of<MultiplierViewModel>(context, listen: false).multiplierModel;
+    final multiplierData = multiplierModel.data?.data;
+    final multiplierLength = multiplierData?.length ?? 0;
+
+    if (_currentChickenIndex < multiplierLength) {
       _currentChickenIndex++;
 
-      // Calculate the offset based on the current container width
-      double containerWidth = _currentChickenIndex == maxChickenIndex - 1
-          ? screenWidth * 0.45
-          : screenWidth * 0.3;
+      // Calculate container width based on whether it's the last index or not
+      double containerWidth;
+      if (_currentChickenIndex == multiplierLength) {
+        // Last index (golden egg wall) has different width
+        containerWidth = screenWidth * 0.5;
+        print('this is movement');
+      } else {
+        // Regular red containers
+        containerWidth = screenWidth * 0.4;
+        print('this is ok');
+      }
 
-      _backgroundOffset -= containerWidth + screenWidth * 0.05;
+      _backgroundOffset -= containerWidth;
       _isScrolling = true;
       _resetFireAnimations();
       notifyListeners();
@@ -110,7 +119,7 @@ class ChickenController extends ChangeNotifier {
         _isScrolling = false;
         Provider.of<AuthViewModel>(context, listen: false).profileApi(context);
         // Check if we reached the last index
-        if (_currentChickenIndex == maxChickenIndex) {
+        if (_currentChickenIndex == multiplierLength) {
           _showWinDialog(context);
         } else {
           _checkForFire(context, _currentChickenIndex);
@@ -118,6 +127,40 @@ class ChickenController extends ChangeNotifier {
       });
     }
   }
+  // void _continueGame(BuildContext context) {
+  //   final multiplierModel =
+  //       Provider.of<MultiplierViewModel>(context,listen: false).multiplierModel;
+  //   final multiplierData = multiplierModel.data?.data;
+  //
+  //   // Safely get the multiplier length or default to 0
+  //   final multiplierLength = multiplierData?.length ?? 0;
+  //
+  //   // Determine if this is the last index
+  //   final isLast =  multiplierLength + 1;
+  //   if (_currentChickenIndex < multiplierLength) {
+  //     _currentChickenIndex++;
+  //
+  //     // Calculate the offset based on the current container width
+  //     double containerWidth = _currentChickenIndex == isLast
+  //         ? screenWidth * 0.45
+  //         : screenWidth * 0.3;
+  //
+  //     _backgroundOffset -= containerWidth + screenWidth * 0.05;
+  //     _isScrolling = true;
+  //     _resetFireAnimations();
+  //     notifyListeners();
+  //     Future.delayed(redDelay, () {
+  //       _isScrolling = false;
+  //       Provider.of<AuthViewModel>(context, listen: false).profileApi(context);
+  //       // Check if we reached the last index
+  //       if (_currentChickenIndex == multiplierLength) {
+  //         _showWinDialog(context);
+  //       } else {
+  //         _checkForFire(context, _currentChickenIndex);
+  //       }
+  //     });
+  //   }
+  // }
 
   void _checkForFire(BuildContext context, int index) {
     if (_showSmallFire || _showBigFire) {
@@ -183,19 +226,23 @@ class ChickenController extends ChangeNotifier {
   void _triggerFireAnimation(BuildContext context, int index) {
     _currentFireIndex = index;
     _showSmallFire = true;
-    _isGameOver = false;
+    _isGameOver = true; // Mark game as over immediately
     notifyListeners();
 
     Future.delayed(const Duration(milliseconds: 500), () {
       _showSmallFire = false;
       _showBigFire = true;
       notifyListeners();
-      Future.delayed(bigFireDuration, () {
+
+      // Show big fire for 2 seconds
+      Future.delayed(const Duration(seconds: 2), () {
+        // Remove chicken and show blue container
+        flippedRedIndices.add(index); // Mark this container as flipped
+        _showBigFire = false; // Hide the big fire after 2 seconds
+        notifyListeners();
+
         Provider.of<WinLossViewModel>(context, listen: false)
             .winLossApi(context);
-        // _showBigFire = false;
-        _isGameOver = false;
-        // notifyListeners();
         _showGameOverDialog(context);
       });
     });

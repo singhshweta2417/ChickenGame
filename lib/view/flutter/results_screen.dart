@@ -9,14 +9,14 @@ import 'package:provider/provider.dart';
 import '../../res/view_model/bet_history_view_model.dart';
 import 'bet_history_screen.dart';
 
-class SliderScreen extends StatefulWidget {
-  const SliderScreen({super.key});
+class ResultScreen extends StatefulWidget {
+  const ResultScreen({super.key});
 
   @override
-  State<SliderScreen> createState() => _SliderScreenState();
+  State<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _SliderScreenState extends State<SliderScreen> {
+class _ResultScreenState extends State<ResultScreen> {
   @override
   void initState() {
     // TODO: implement initState

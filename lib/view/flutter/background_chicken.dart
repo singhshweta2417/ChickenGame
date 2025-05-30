@@ -9,7 +9,6 @@ import '../../generated/assets.dart';
 import '../../res/color_constant.dart';
 import '../../res/primary_button.dart';
 import '../../res/text_widget.dart';
-import 'big_fire_const.dart';
 import 'controller_chicken.dart';
 import 'fire_const.dart';
 
@@ -62,7 +61,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
         curve: Curves.easeInOut,
       ),
     );
-     print('yaha shuru ho ra h chicken');
+    print('here chicken is start');
     _controller.chickenControllerStart();
   }
 
@@ -227,8 +226,9 @@ class _BackgroundChickenState extends State<BackgroundChicken>
   }
 
   Widget _buildChickenCharacter() {
-    if (_controller.isGameOver) {
-      return const SizedBox.shrink(); // Chicken hidden when game is over
+    if (_controller.isGameOver || _controller.showBigFire) {
+      return const SizedBox
+          .shrink(); // Hide chicken when game over or big fire shows
     }
 
     return AnimatedPositioned(
@@ -248,9 +248,7 @@ class _BackgroundChickenState extends State<BackgroundChicken>
         ),
       ),
     );
-
   }
-
 
   Widget _buildFireEffects() {
     final multiplier =
@@ -281,9 +279,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
 
     // Determine if this is the last index
     final isLast = index == multiplierLength - 1;
-    print(multiplierLength);
-    print(isLast);
-    print('isLastdjbfkj');
     return Container(
       height: screenHeight * 0.5,
       padding: EdgeInsets.only(
@@ -311,10 +306,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
       height: screenHeight * 0.4,
       width: screenWidth * 0.3,
       alignment: Alignment.centerRight,
-      // decoration: BoxDecoration(
-      //     color: Colors.blue,
-      //     image: DecorationImage(image: AssetImage("assets/images/collission_fire.gif"),fit: BoxFit.cover)),
-      // child: const BigFire(),
       child: _videoController.value.isInitialized
           ? SizedBox.expand(
               child: FittedBox(
@@ -358,7 +349,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
           vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
       margin: EdgeInsets.symmetric(
           vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
-      // height: screenHeight * 0.3,
       decoration: BoxDecoration(
         color: ColorConstant.footerBg,
         borderRadius: BorderRadius.circular(10),
@@ -589,11 +579,13 @@ class _BackgroundChickenState extends State<BackgroundChicken>
         setState(() {
           _controller.dropdownValue = value;
 
-          final selectedApiValue = difficultyMap[value] ?? '1'; // default to '1' (Easy)
+          final selectedApiValue =
+              difficultyMap[value] ?? '1'; // default to '1' (Easy)
 
           final multiplier =
-          Provider.of<MultiplierViewModel>(context, listen: false);
-          multiplier.multiplierApi(selectedApiValue, context); // Send mapped value to API
+              Provider.of<MultiplierViewModel>(context, listen: false);
+          multiplier.multiplierApi(
+              selectedApiValue, context); // Send mapped value to API
 
           print('Selected difficulty: $value => API value: $selectedApiValue');
         });
@@ -636,7 +628,6 @@ class _BackgroundChickenState extends State<BackgroundChicken>
       ),
     );
   }
-
 
   Widget _buildGoButton() {
     bool isDisabled = !_controller.hasUserPlacedBet ||
